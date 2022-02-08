@@ -1,0 +1,13 @@
+*.build.sh
+*.import.scm
+*.install.sh
+*.link
+*.o
+*.scm#*
+*.scm~
+*.so
+*.ss#*
+*.ss~
+*.types
+.#*.scm
+.#*.ss

@@ -1,0 +1,34 @@
+; vim: ft=scheme
+((author "siiky")
+ (license "unlicense")
+ (synopsis "IPFS HTTP API for Scheme")
+ (version "0.0.0")
+ (dependencies
+   bindings
+   http-client
+   intarweb
+   matchable
+   medea
+   openssl
+   procedural-macros
+   srfi-1
+   srfi-13
+   srfi-189
+   srfi-197
+   uri-common)
+ (component-options
+   (csc-options "-O0" "-d3")
+   ;(linkage static)
+   )
+ (components
+   (extension ipfs
+              (types-file)
+              (component-dependencies ipfs.v0)
+              (modules ipfs)
+              (source ipfs.scm))
+
+   (extension ipfs.v0
+              (types-file)
+              (modules ipfs.v0)
+              (source ipfs.v0.scm))
+   ))
