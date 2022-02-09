@@ -109,18 +109,11 @@
     (call-request (make-request uri #:method method) #:reader reader #:writer writer))
 
 
-  (define kv-key car)
-  (define kv-value cdr)
-  (define kv cons)
-  (define (kv-value-pred pred?) (o pred? kv-value))
-  (define ((kv-value-map mapper) p)
-    (kv (kv-key p) (mapper (kv-value p))))
-
   (define make-query
     (chain-lambda
       (map
         ; (K, Maybe V) -> Maybe (K, V)
-        (match-lambda ((k . v) (maybe-map (cute kv k <>) v)))
+        (match-lambda ((k . v) (maybe-map (cute cons k <>) v)))
         _)
       (filter just? _)
       (append-map
@@ -128,7 +121,7 @@
           ; (K, V) -> [(K, V)]
           list
           ; (K, [V]) -> [(K, V)]
-          ;((match-lambda ((k . v) (map (cute kv k <>) v))) _)
+          ;((match-lambda ((k . v) (map (cute cons k <>) v))) _)
           ; Just (K, V) -> (K, V)
           maybe->values)
         _)))
