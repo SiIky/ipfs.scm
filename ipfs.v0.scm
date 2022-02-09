@@ -318,12 +318,6 @@
   (export-rpc-call () ((object patch set-data)))
   (export-rpc-call () ((object put)))
   (export-rpc-call () ((object stat)))
-  (export-rpc-call () ((p2p close)))
-  (export-rpc-call () ((p2p forward)))
-  (export-rpc-call () ((p2p listen)))
-  (export-rpc-call () ((p2p ls)))
-  (export-rpc-call () ((p2p stream close)))
-  (export-rpc-call () ((p2p stream ls)))
   (export-rpc-call () ((swarm addrs)))
   (export-rpc-call () ((swarm addrs listen)))
   (export-rpc-call () ((swarm addrs local)))
@@ -463,6 +457,15 @@
   (export-rpc-call () ((name pubsub state)))
   (export-rpc-call () ((name pubsub subs)) (ipns-base String))
   (export-rpc-call () ((name resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
+
+  ; TODO: Didn't understand the example response of the docs; try to get an
+  ;       actual example.
+  (export-rpc-call ()             ((p2p close)) (all Bool) (protocol String) (listen-address String) (target-address String))
+  (export-rpc-call (reader/plain) ((p2p forward) (protocol String yes) (listen-endpoint String yes) (target-endpoint String yes)) (allow-custom-protocol Bool))
+  (export-rpc-call (reader/plain) ((p2p listen) (protocol String yes) (target-endpoint String yes)) (allow-custom-protocol Bool) (report-peer-id Bool))
+  (export-rpc-call ()             ((p2p ls)) (headers Bool))
+  (export-rpc-call (reader/plain) ((p2p stream close) (stream String no)) (all Bool))
+  (export-rpc-call ()             ((p2p stream ls)) (headers Bool))
 
   (export-rpc-call ()             ((pin add) (path String yes)) (recursive Bool) (progress Bool))
   (export-rpc-call ()             ((pin ls) (path String no)) (type String) (quiet Bool) (stream Bool))
