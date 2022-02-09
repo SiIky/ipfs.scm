@@ -306,10 +306,6 @@
   ;;;
 
   ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((bitswap ledger)))
-  (export-rpc-call () ((bitswap reprovide)))
-  (export-rpc-call () ((bitswap stat)))
-  (export-rpc-call () ((bitswap wantlist)))
   (export-rpc-call () ((block get)))
   (export-rpc-call () ((block put)))
   (export-rpc-call () ((block rm)))
@@ -441,10 +437,10 @@
     (inline Bool)
     (inline-limit Int))
 
-  (export-rpc-call () ((bitswap ledger) (peer String yes)))
-  (export-rpc-call () ((bitswap reprovide)))
-  (export-rpc-call () ((bitswap stat)) (verbose Bool) (human Bool))
-  (export-rpc-call () ((bitswap wantlist)) (peer String))
+  (export-rpc-call ()             ((bitswap ledger) (peer String yes)))
+  (export-rpc-call (reader/plain) ((bitswap reprovide)))
+  (export-rpc-call ()             ((bitswap stat)) (verbose Bool) (human Bool))
+  (export-rpc-call ()             ((bitswap wantlist)) (peer String))
 
   (export-rpc-call (reader/plain) ((cat) (path String yes)) (offset Int) (length Int))
 
@@ -470,7 +466,7 @@
 
   (export-rpc-call (reader/plain) ((get) (path String yes)) (output String) (archive Bool) (compress Bool) (compression-level Int))
 
-  (export-rpc-call () ((id) (id String no)) (format String) (peerid-base String))
+  (export-rpc-call () ((id) (peer String no)) (format String) (peerid-base String))
 
   (export-rpc-call () ((name publish) (path String yes)) (resolve Bool) (lifetime String) (allow-offline Bool) (ttl String) (key String) (quieter Bool) (ipns-base String))
   (export-rpc-call () ((name pubsub cancel) (path String yes)))
@@ -490,7 +486,7 @@
   (export-rpc-call ()             ((pin remote service ls)) (stat Bool))
   (export-rpc-call (reader/plain) ((pin remote service rm) (name String yes)))
 
-  (export-rpc-call () ((ping) (id String yes)) (count Int))
+  (export-rpc-call () ((ping) (peer String yes)) (count Int))
 
   (export-rpc-call () ((resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
   )
