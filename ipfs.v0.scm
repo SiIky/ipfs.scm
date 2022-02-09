@@ -9,11 +9,17 @@
    call-request
    make-uri
    make-request
+   http-api-path
 
    reader/json
    reader/plain
    writer/file
    writer/filesystem
+
+   Bool
+   Int
+   String
+   Array
 
    make-rpc-lambda
    export-rpc-call
@@ -48,19 +54,25 @@
   (import
     (only srfi-1
           append-map
+          every
           filter)
+    (only srfi-13
+          string-join)
     (only srfi-189
           just
           just?
           maybe->values
+          maybe-bind
           maybe-map
           maybe?
           nothing
           nothing?)
-
-    (only srfi-197
-          chain
-          chain-lambda))
+    (rename
+      (only srfi-197
+            chain
+            chain-lambda)
+      (chain =>)
+      (chain-lambda ->)))
 
   (define-constant %api-base% "api")
   (define-constant %version% "v0")
@@ -116,21 +128,20 @@
 
 
   (define make-query
-    (chain-lambda
-      (map
-        ; (K, Maybe V) -> Maybe (K, V)
-        (match-lambda ((k . v) (maybe-map (cute cons k <>) v)))
-        _)
-      (filter just? _)
-      (append-map
-        (o
-          ; (K, V) -> [(K, V)]
-          list
-          ; (K, [V]) -> [(K, V)]
-          ;((match-lambda ((k . v) (map (cute cons k <>) v))) _)
-          ; Just (K, V) -> (K, V)
-          maybe->values)
-        _)))
+    (-> (map
+          ; (K, Maybe V) -> Maybe (K, V)
+          (match-lambda ((k . v) (maybe-map (cute cons k <>) v)))
+          _)
+        (filter just? _)
+        (append-map
+          (o
+            ; (K, V) -> [(K, V)]
+            list
+            ; (K, [V]) -> [(K, V)]
+            ;((match-lambda ((k . v) (map (cute cons k <>) v))) _)
+            ; Just (K, V) -> (K, V)
+            maybe->values)
+          _)))
 
 
   (define (->maybe x)
@@ -142,21 +153,25 @@
   (define ((list-wrapper type-cast) name value)
     (->list (type-cast name value)))
   (define ((type-wrapper type-cast) argname value)
-    (chain value
-           (->maybe _)
-           ; TODO: Use maybe-bind instead so that type functions may fail
-           (maybe-map (cute type-cast argname <>) _)))
+    (=> value
+        (->maybe _)
+        ; TODO: Use maybe-bind instead so that type functions may fail
+        (maybe-bind _ (cute type-cast (->string argname) <>))))
 
-  (define (*->bool name value) (if value "true" "false"))
-  (define (*->string name value) (->string value))
+  (define (*->bool name value) (just (if value "true" "false")))
+  (define (*->string name value) (just (->string value)))
   (define (*->number name n)
-    (assert (number? n) (string-append (symbol->string name) " must be an integer"))
-    n)
+    (assert (number? n) (string-append name " must be an integer"))
+    (just n))
 
-  (define (*->array name lst)
-    (assert (and (list? lst) (every string? lst))
-            (string-append (symbol->string name) " must be list of strings"))
-    (string-append "[" (string-join lst ",") "]"))
+  (define ((*->array Type) name lst)
+    (assert (list? lst) (string-append name " must be a list"))
+    (let ((elem-name (string-append "element of " name)))
+      (=> lst
+          (map (o maybe->values (cute Type elem-name <>)) _)
+          (string-join _ ",")
+          (string-append "[" _ "]")
+          (just _))))
 
   ;; NOTE: The only types listed on the official documentation, as of now, are:
   ;;   * Bool
@@ -169,16 +184,15 @@
   (define Int (type-wrapper *->number))
   (define String (type-wrapper *->string))
 
-  ; TODO
   (define (Array type)
-    (type-wrapper *->array))
+    (type-wrapper (*->array type)))
 
 
   (define (rpc-call path arguments flags #!key reader writer)
-    (chain (append (make-query arguments)
-                   (make-query flags))
-           (make-uri #:path path #:query _)
-           (call-uri _ #:reader reader #:writer writer)))
+    (=> (append (make-query arguments)
+                (make-query flags))
+        (make-uri #:path path #:query _)
+        (call-uri _ #:reader reader #:writer writer)))
 
   (define (yes argname value)
     (assert (not (nothing? value))
@@ -259,7 +273,8 @@
     bindings
     (only chicken.syntax strip-syntax)
     (only srfi-13 string-join)
-    (only srfi-197 chain))
+    (rename (only srfi-197 chain)
+            (chain =>)))
 
   ;; @brief Defines and exports an RPC procedure created with make-rpc-lambda.
   ;;
@@ -278,10 +293,10 @@
     (with-implicit-renaming
       (=? %name)
       (let* ((%name
-               (chain path
-                      (map (o symbol->string strip-syntax) _)
-                      (string-join _ "/")
-                      (string->symbol _))))
+               (=> path
+                   (map (o symbol->string strip-syntax) _)
+                   (string-join _ "/")
+                   (string->symbol _))))
         `(begin
            (export ,%name)
            (define ,%name (make-rpc-lambda ,reader/writer ,path ,arguments ,flags))))))
@@ -469,8 +484,8 @@
   (export-rpc-call ()             ((pin update) (old-path String yes) (new-path String yes)) (unpin Bool))
   (export-rpc-call ()             ((pin verify)) (verbose Bool) (quiet Bool))
   (export-rpc-call ()             ((pin remote add) (path String yes)) (service String) (name String) (background Bool))
-  (export-rpc-call ()             ((pin remote ls)) (service String) (name String) (cid Array) (status Array))
-  (export-rpc-call (reader/plain) ((pin remote rm)) (service String) (name String) (cid Array) (force Bool))
+  (export-rpc-call ()             ((pin remote ls)) (service String) (name String) (cid (Array String)) (status (Array String)))
+  (export-rpc-call (reader/plain) ((pin remote rm)) (service String) (name String) (cid (Array String)) (status (Array String)) (force Bool))
   (export-rpc-call (reader/plain) ((pin remote service add) (name String yes) (endpoint String yes) (key String yes)))
   (export-rpc-call ()             ((pin remote service ls)) (stat Bool))
   (export-rpc-call (reader/plain) ((pin remote service rm) (name String yes)))
