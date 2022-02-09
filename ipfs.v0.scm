@@ -307,18 +307,6 @@
   ;;;
 
   ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((dag export)))
-  (export-rpc-call () ((dag get)))
-  (export-rpc-call () ((dag import)))
-  (export-rpc-call () ((dag put)))
-  (export-rpc-call () ((dag resolve)))
-  (export-rpc-call () ((dag stat)))
-  (export-rpc-call () ((dht findpeer)))
-  (export-rpc-call () ((dht findprovs)))
-  (export-rpc-call () ((dht get)))
-  (export-rpc-call () ((dht provide)))
-  (export-rpc-call () ((dht put)))
-  (export-rpc-call () ((dht query)))
   (export-rpc-call () ((key export)))
   (export-rpc-call () ((key gen)))
   (export-rpc-call () ((key import)))
@@ -422,6 +410,20 @@
   (export-rpc-call ()             ((config profile apply) (profile String yes)) (dry-run Bool))
   (export-rpc-call (reader/plain) ((config replace)))
   (export-rpc-call ()             ((config show)))
+
+  (export-rpc-call (reader/plain) ((dag export) (cid String yes)) (progress Bool))
+  (export-rpc-call (reader/plain) ((dag get) (object String yes)) (output-codec String))
+  (export-rpc-call ()             ((dag import)) (pin-roots Bool) (silent Bool) (stats Bool))
+  (export-rpc-call ()             ((dag put)) (store-codec String) (input-codec String) (pin Bool) (hash String))
+  (export-rpc-call ()             ((dag resolve) (path String yes)))
+  (export-rpc-call ()             ((dag stat) (cid String yes)) (progress Bool))
+
+  (export-rpc-call () ((dht findpeer) (peer String yes)) (verbose Bool))
+  (export-rpc-call () ((dht findprovs) (key String yes)) (verbose Bool) (num-providers Int))
+  (export-rpc-call () ((dht get) (key String yes)) (verbose Bool))
+  (export-rpc-call () ((dht provide) (key String yes)) (verbose Bool) (recursive Bool))
+  (export-rpc-call () ((dht put) (key String yes)) (verbose Bool))
+  (export-rpc-call () ((dht query) (peer String yes)) (verbose Bool))
 
   (export-rpc-call ()             ((diag cmds)) (verbose Bool))
   (export-rpc-call (reader/plain) ((diag cmds clear)))
