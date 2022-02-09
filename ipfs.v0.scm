@@ -150,19 +150,19 @@
     n)
 
   ;; NOTE: The only types listed on the official documentation, as of now, are:
-  ;;   * bool
-  ;;   * int, uint, int64
-  ;;   * string
-  ;;   * array
+  ;;   * Bool
+  ;;   * Int (int, uint, int64)
+  ;;   * String
+  ;;   * Array
   ;; @see https://docs.ipfs.io/reference/http/api
   ;; TODO: Find the difference between the integer types for the API
-  (define bool (type-wrapper *->bool))
-  (define int (type-wrapper *->number))
-  (define string (type-wrapper *->string))
+  (define Bool (type-wrapper *->bool))
+  (define Int (type-wrapper *->number))
+  (define String (type-wrapper *->string))
 
   ; TODO
-  (define (array type)
-    (type-wrapper (type-wrapper bool)))
+  (define (Array type)
+    (type-wrapper (type-wrapper Bool)))
 
 
   (define (rpc-call path arguments flags #!key reader writer)
@@ -212,8 +212,8 @@
   ;;   ((argument atype required?) ...)
   ;;   ((flag ftype) ...))
   ;;
-  ;; `required?` can be either `yes` or `no`. The type procedures are `bool`,
-  ;;   `int`, `string`, and `array` (TBI).
+  ;; `required?` can be either `yes` or `no`. The type procedures are `Bool`,
+  ;;   `Int`, `String`, and `Array` (TBI).
   ;;
   ;; @see export-rpc-call
   (define-syntax make-rpc-lambda
@@ -285,38 +285,38 @@
   (export-rpc-call
     ()
     ((add))
-    (quiet bool)
-    (quieter bool)
-    (silent bool)
-    (progress bool)
-    (trickle bool)
-    (only-hash bool)
-    (wrap-with-directory bool)
-    (chunker string)
-    (pin bool)
-    (raw-leaves bool)
-    (nocopy bool)
-    (fscache bool)
-    (cid-version int)
-    (hash string)
-    (inline bool)
-    (inline-limit int))
+    (quiet Bool)
+    (quieter Bool)
+    (silent Bool)
+    (progress Bool)
+    (trickle Bool)
+    (only-hash Bool)
+    (wrap-with-directory Bool)
+    (chunker String)
+    (pin Bool)
+    (raw-leaves Bool)
+    (nocopy Bool)
+    (fscache Bool)
+    (cid-version Int)
+    (hash String)
+    (inline Bool)
+    (inline-limit Int))
 
-  (export-rpc-call () ((bitswap ledger) (peer string yes)))
+  (export-rpc-call () ((bitswap ledger) (peer String yes)))
   (export-rpc-call () ((bitswap reprovide)))
-  (export-rpc-call () ((bitswap stat)) (verbose bool) (human bool))
-  (export-rpc-call () ((bitswap wantlist)) (peer string))
+  (export-rpc-call () ((bitswap stat)) (verbose Bool) (human Bool))
+  (export-rpc-call () ((bitswap wantlist)) (peer String))
 
   ; block
   ; bootstrap
 
-  (export-rpc-call (reader/plain) ((cat) (path string yes)) (offset int) (length int))
+  (export-rpc-call (reader/plain) ((cat) (path String yes)) (offset Int) (length Int))
 
   ; cid
   (export-rpc-call () ((cid codecs)))
 
   ; commands
-  (export-rpc-call () ((commands)) (flags bool))
+  (export-rpc-call () ((commands)) (flags Bool))
   (export-rpc-call () ((commands completion bash)))
 
   ; config
