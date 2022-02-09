@@ -97,32 +97,49 @@
   (define reader/json json:read)
   (define reader/plain read-string)
 
+  ;; @brief Compute the appropriate body for a single file.
+  ;; @param path The file's path.
+  ;; @param filename The filename sent in the request.
+  ;; @param headers Extra headers sent in the request for this file.
+  ;; @returns An alist that can be used by `with-input-from-request` as the
+  ;;   writer.
   (define (writer/file path #!key filename headers)
     (let ((filename (or filename path))
           (filename-entry (if filename `(#:filename ,filename) '()))
           (headers-entry (if headers `(#:headers ,headers) '())))
       `((,filename #:file ,path ,@filename-entry ,@headers-entry))))
 
-  (define (writer/filesystem)
-    ; TODO: Implement reading files & traversing a file system to write the
-    ;       request body.
+  ; TODO: Implement reading files & traversing a file system to write the
+  ;       request body.
+  (define (writer/filesystem path)
     "")
 
+  ;; @see `uri-common`'s `make-uri`
   (define (make-uri #!key (scheme (*scheme*)) (host (*host*)) (port (*port*)) path query)
     (uri:make #:scheme scheme #:host host #:port port #:path path #:query query))
 
+  ;; @see `intarweb`'s `make-request`
   (define (make-request uri)
     (request:make
       #:method 'POST
       #:uri uri))
 
+  ;; @brief Wrapper around `http-client`'s `with-input-from-request`.
+  ;; @see `http-client`'s `with-input-from-request`.
   (define (call-request request #!key reader writer)
     (with-input-from-request request writer reader))
 
+  ;; @brief Thin wrapper around `call-request`.
+  ;; @see `call-request`
   (define (call-uri uri #!key reader writer)
     (call-request (make-request uri) #:reader reader #:writer writer))
 
 
+  ;; @brief Process the arguments and flags given to the procedure and create
+  ;;   the query alist used in `make-uri`.
+  ;; @param arguments The alist of the (key . maybe) pairs of each argument and
+  ;;   flag.
+  ;; @returns The final alist of (key . value) pairs used in `make-uri`.
   (define make-query
     (-> (map
           ; (K, Maybe V) -> Maybe (K, V)
@@ -211,18 +228,18 @@
   ;; @param path A list of the form (component ...) that denotes the path of
   ;;   the endpoint.
   ;;
-  ;; @param arguments A list of the form ((argument type required?) ...) that
+  ;; @param arguments A list of the form ((argument atype required?) ...) that
   ;;   specifies the list of arguments. `argument` is the argument's name, used
-  ;;   as the keyword argument in the defined procedure. `type` is the type
+  ;;   as the keyword argument in the defined procedure. `atype` is the type
   ;;   procedure that corresponds to the expected type. `required?` is `yes` or
-  ;;   `no` according to whether the argument is required or not. These are
-  ;;   sent to the server in the query string with the key `arg`.
+  ;;   `no` according to whether the argument is required or not. Arguments are
+  ;;   always sent to the server in the query string with the key `arg`.
   ;;
-  ;; @param flags A list of the form ((flag type) ...) that specifies the list
-  ;;   of flags. `flag` is the name of the flag, used for both the keyword
-  ;;   argument in the defined procedure, as well as the key in the query
-  ;;   string sent to the server. `type` is the type procedure that corresponds
-  ;;   to the expected type.
+  ;; @param flags A list of the form ((flag ftype) ...) that specifies the list
+  ;;   of flags. `flag` is the flag's name, used for both the keyword argument
+  ;;   in the defined procedure, as well as the key in the query string sent to
+  ;;   the server. `ftype` is the type procedure that corresponds to the
+  ;;   expected type.
   ;;
   ;; Used in the form (make-rpc-lambda path arguments flags), that is:
   ;;
@@ -233,7 +250,7 @@
   ;;   ((flag ftype) ...))
   ;;
   ;; `required?` can be either `yes` or `no`. The type procedures are `Bool`,
-  ;;   `Int`, `String`, and `Array` (TBI).
+  ;;   `Int`, `String`, and `(Array Type)`.
   ;;
   ;; @see export-rpc-call
   (define-syntax make-rpc-lambda
@@ -283,8 +300,8 @@
   ;;   (export-rpc-call
   ;;     (default-reader default-writer)
   ;;     ((component ...)
-  ;;      (argument type required?) ...)
-  ;;     (flag type) ...)
+  ;;      (argument atype required?) ...)
+  ;;     (flag ftype) ...)
   ;;
   ;; @see make-rpc-lambda
   (define-macro
