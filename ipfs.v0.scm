@@ -176,8 +176,7 @@
            ; TODO: Use maybe-bind instead so that type functions may fail
            (maybe-map (cute type-cast argname <>) _)))
 
-  (define ->bool (o not not))
-  (define (*->bool name value) (->bool value))
+  (define (*->bool name value) (if value "true" "false"))
   (define (*->string name value) (->string value))
   (define (*->number name n)
     (assert (number? n) (string-append (symbol->string name) " must be an integer"))
@@ -203,8 +202,7 @@
     (chain (append (make-query arguments)
                    (make-query flags))
            (make-uri #:path path #:query _)
-           (call-uri _ #:reader reader #:writer writer)
-           ))
+           (call-uri _ #:reader reader #:writer writer)))
 
   (define (yes argname value)
     (assert (not (nothing? value))
