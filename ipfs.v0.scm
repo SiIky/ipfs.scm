@@ -288,8 +288,8 @@
 
   ;; The docs seem to suggest that some CLI commands don't have a corresponding
   ;;   HTTP endpoint. Endpoints that give HTTP 404:
-  ;(export-rpc-call () ((commands completion bash)))
-  ;(export-rpc-call () ((config edit)))
+  ;(export-rpc-call (reader/plain) ((commands completion bash)))
+  ;(export-rpc-call (reader/plain) ((config edit)))
 
   (export-rpc-call
     ()
@@ -329,7 +329,7 @@
 
   (export-rpc-call () ((config) (key String yes) (value String no)) (bool Bool) (json Bool))
   (export-rpc-call () ((config profile apply) (profile String yes)) (dry-run Bool))
-  (export-rpc-call () ((config replace)))
+  (export-rpc-call (reader/plain) ((config replace)))
   (export-rpc-call () ((config show)))
 
   ; dag
@@ -339,16 +339,16 @@
 
   ; The docs say `file/ls` is deprecated and recommend using `ls` instead.
 
-  (export-rpc-call () ((files chcid) (path String no)) (cid-version Int) (hash String))
-  (export-rpc-call () ((files cp) (from String yes) (to String yes)) (parents Bool))
+  (export-rpc-call (reader/plain) ((files chcid) (path String no)) (cid-version Int) (hash String))
+  (export-rpc-call (reader/plain) ((files cp) (from String yes) (to String yes)) (parents Bool))
   (export-rpc-call () ((files flush) (path String no)))
   (export-rpc-call () ((files ls) (path String no)) (long Bool) (U Bool))
-  (export-rpc-call () ((files mkdir) (path String yes)) (parents Bool) (cid-version Int) (hash String))
-  (export-rpc-call () ((files mv) (from String yes) (to String yes)))
+  (export-rpc-call (reader/plain) ((files mkdir) (path String yes)) (parents Bool) (cid-version Int) (hash String))
+  (export-rpc-call (reader/plain) ((files mv) (from String yes) (to String yes)))
   (export-rpc-call (reader/plain) ((files read) (path String yes)) (offset Int) (count Int))
-  (export-rpc-call () ((files rm) (path String yes)) (recursive Bool) (force Bool))
+  (export-rpc-call (reader/plain) ((files rm) (path String yes)) (recursive Bool) (force Bool))
   (export-rpc-call () ((files stat) (path String yes)) (format String) (hash Bool) (size Bool) (with-local Bool))
-  (export-rpc-call () ((files write) (path String yes)) (offset Int) (create Bool) (parents Bool) (truncate Bool) (count Int) (raw-leaves Bool) (cid-version Int) (hash String))
+  (export-rpc-call (reader/plain) ((files write) (path String yes)) (offset Int) (create Bool) (parents Bool) (truncate Bool) (count Int) (raw-leaves Bool) (cid-version Int) (hash String))
 
   ; filestore
 
