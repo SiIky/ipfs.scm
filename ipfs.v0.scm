@@ -153,6 +153,11 @@
     (assert (number? n) (string-append (symbol->string name) " must be an integer"))
     n)
 
+  (define (*->array name lst)
+    (assert (and (list? lst) (every string? lst))
+            (string-append (symbol->string name) " must be list of strings"))
+    (string-append "[" (string-join lst ",") "]"))
+
   ;; NOTE: The only types listed on the official documentation, as of now, are:
   ;;   * Bool
   ;;   * Int (int, uint, int64)
@@ -166,7 +171,7 @@
 
   ; TODO
   (define (Array type)
-    (type-wrapper (type-wrapper Bool)))
+    (type-wrapper *->array))
 
 
   (define (rpc-call path arguments flags #!key reader writer)
