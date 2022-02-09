@@ -29,6 +29,7 @@
     (except scheme
             apply
             force
+            log
             truncate
             write)
     (only chicken.base
@@ -374,12 +375,6 @@
   (export-rpc-call () ((repo stat)))
   (export-rpc-call () ((repo verify)))
   (export-rpc-call () ((repo version)))
-  (export-rpc-call () ((shutdown)))
-  (export-rpc-call () ((stats bitswap)))
-  (export-rpc-call () ((stats bw)))
-  (export-rpc-call () ((stats dht)))
-  (export-rpc-call () ((stats provide)))
-  (export-rpc-call () ((stats repo)))
   (export-rpc-call () ((swarm addrs)))
   (export-rpc-call () ((swarm addrs listen)))
   (export-rpc-call () ((swarm addrs local)))
@@ -486,6 +481,15 @@
   (export-rpc-call () ((ping) (peer String yes)) (count Int))
 
   (export-rpc-call () ((resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
+
+  (export-rpc-call (reader/plain) ((shutdown)))
+
+  (export-rpc-call () ((stats bitswap)) (verbose Bool) (human Bool))
+  ; Polling hangs? Kinda makes sense but...
+  (export-rpc-call () ((stats bw)) (peer String) (proto String) (poll Bool) (interval String))
+  (export-rpc-call () ((stats dht) (dht String no)))
+  (export-rpc-call () ((stats provide)))
+  (export-rpc-call () ((stats repo)) (size-only Bool) (human Bool))
 
   (export-rpc-call ()             ((tar add)))
   (export-rpc-call (reader/plain) ((tar cat) (path String yes)))
