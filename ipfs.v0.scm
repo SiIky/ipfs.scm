@@ -20,53 +20,26 @@
    )
 
   (import
-    (except scheme
-            string)
+    (except scheme string)
     (only chicken.base
           assert
           cute
-          make-parameter
           define-constant
+          make-parameter
           o)
-    (only chicken.io
-          read-string)
-    (only chicken.module
-          export)
-    (only chicken.string
-          ->string)
-    )
+    (only chicken.io read-string)
+    (only chicken.module export)
+    (only chicken.string ->string))
 
   (import
-    (prefix (rename (only medea read-json)
-                    (read-json read))
-            |json:|)
+    (rename (only medea read-json)
+            (read-json json:read))
     (rename (only uri-common make-uri)
             (make-uri uri:make))
     (rename (only intarweb make-request)
             (make-request request:make))
-    (only http-client
-          with-input-from-request)
+    (only http-client with-input-from-request)
     matchable)
-
-  ;(import
-  ;  (rename
-  ;    (only srfi-189
-  ;          either-bind
-  ;          either-ref
-  ;          either?
-  ;          exception->either
-  ;          left
-  ;          left?
-  ;          right
-  ;          right?)
-  ;    (either-bind       result-bind)
-  ;    (either-ref        result-ref)
-  ;    (either?           result?)
-  ;    (exception->either exception->result)
-  ;    (left              result/error)
-  ;    (left?             result/error?)
-  ;    (right             result/ok)
-  ;    (right?            result/ok?)))
 
   (import
     (only srfi-1
@@ -83,8 +56,7 @@
 
     (only srfi-197
           chain
-          chain-lambda)
-    )
+          chain-lambda))
 
   (define-constant %api-base% "api")
   (define-constant %version% "v0")
@@ -210,6 +182,10 @@
     value)
   (define (no argname value) value)
 
+  ;;;
+  ;;; Helper macros
+  ;;;
+
   ;; @brief Creates a procedure that can be used to make an RPC call.
   ;;
   ;; @param default-reader/writer The default reader & writer thunks given to
@@ -307,6 +283,10 @@
            (export ,%name)
            (define ,%name (make-rpc-lambda ,reader/writer ,path ,arguments ,flags))))))
 
+  ;;;
+  ;;; Enpoint procedures
+  ;;;
+
   (export-rpc-call
     ()
     ((add))
@@ -332,8 +312,47 @@
   (export-rpc-call () ((bitswap stat)) (verbose bool) (human bool))
   (export-rpc-call () ((bitswap wantlist)) (peer string))
 
+  ; block
+  ; bootstrap
+
   (export-rpc-call (reader/plain) ((cat) (path string yes)) (offset int) (length int))
+
+  ; cid
+  (export-rpc-call () ((cid codecs)))
+
+  ; commands
   (export-rpc-call () ((commands)) (flags bool))
   (export-rpc-call () ((commands completion bash)))
-  (export-rpc-call () ((cid codecs)))
+
+  ; config
+  ; dag
+  ; dht
+  ; diag
+  ; dns
+  ; file ?
+  ; files
+  ; filestore
+  ; get
+  ; id
+  ; key
+  ; log
+  ; ls
+  ; mount
+  ; multibase
+  ; name
+  ; object
+  ; p2p
+  ; pin
+  ; ping
+  ; pubsub
+  ; refs
+  ; repo
+  ; resolve
+  ; shutdown
+  ; stats
+  ; swarm
+  ; tar
+  ; update
+  ; urlstore
+  ; version
   )
