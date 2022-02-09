@@ -307,17 +307,6 @@
   ;;;
 
   ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((object data)))
-  (export-rpc-call () ((object diff)))
-  (export-rpc-call () ((object get)))
-  (export-rpc-call () ((object links)))
-  (export-rpc-call () ((object new)))
-  (export-rpc-call () ((object patch add-link)))
-  (export-rpc-call () ((object patch append-data)))
-  (export-rpc-call () ((object patch rm-link)))
-  (export-rpc-call () ((object patch set-data)))
-  (export-rpc-call () ((object put)))
-  (export-rpc-call () ((object stat)))
   (export-rpc-call () ((swarm addrs)))
   (export-rpc-call () ((swarm addrs listen)))
   (export-rpc-call () ((swarm addrs local)))
@@ -457,6 +446,21 @@
   (export-rpc-call () ((name pubsub state)))
   (export-rpc-call () ((name pubsub subs)) (ipns-base String))
   (export-rpc-call () ((name resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
+
+  (export-rpc-call (reader/plain) ((object data) (key String yes)))
+  ; TODO: Maybe change `obj1` & `obj2` to better names.
+  (export-rpc-call ()             ((object diff) (obj1 String yes) (obj2 String yes)) (verbose Bool))
+  ; Deprecated, use `dag/get` instead.
+  ; TODO: Find all the deprecated endpoints.
+  (export-rpc-call ()             ((object get) (key String yes)) (data-encoding String))
+  (export-rpc-call ()             ((object links) (key String yes)) (headers Bool))
+  (export-rpc-call ()             ((object new) (template String no)))
+  (export-rpc-call ()             ((object patch add-link) (hash String yes) (name String yes) (object String yes)) (create Bool))
+  (export-rpc-call ()             ((object patch append-data) (hash String yes)))
+  (export-rpc-call ()             ((object patch rm-link) (hash String yes) (name String yes)))
+  (export-rpc-call ()             ((object patch set-data) (hash String yes)))
+  (export-rpc-call ()             ((object put)) (inputenc String) (datafieldenc String) (pin Bool) (quiet Bool))
+  (export-rpc-call ()             ((object stat) (key String yes)) (human Bool))
 
   ; TODO: Didn't understand the example response of the docs; try to get an
   ;       actual example.
