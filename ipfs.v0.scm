@@ -328,12 +328,6 @@
   (export-rpc-call () ((dht provide)))
   (export-rpc-call () ((dht put)))
   (export-rpc-call () ((dht query)))
-  (export-rpc-call () ((diag cmds)))
-  (export-rpc-call () ((diag cmds clear)))
-  (export-rpc-call () ((diag cmds set-time)))
-  (export-rpc-call () ((diag profile)))
-  (export-rpc-call () ((diag sys)))
-  (export-rpc-call () ((dns)))
   (export-rpc-call () ((filestore dups)))
   (export-rpc-call () ((filestore ls)))
   (export-rpc-call () ((filestore verify)))
@@ -347,7 +341,6 @@
   (export-rpc-call () ((log level)))
   (export-rpc-call () ((log ls)))
   (export-rpc-call () ((log tail)))
-  (export-rpc-call () ((ls)))
   (export-rpc-call () ((mount)))
   (export-rpc-call () ((multibase decode)))
   (export-rpc-call () ((multibase encode)))
@@ -399,12 +392,6 @@
   (export-rpc-call () ((swarm peering ls)))
   (export-rpc-call () ((swarm peering rm)))
   (export-rpc-call () ((swarm peers)))
-  (export-rpc-call () ((tar add)))
-  (export-rpc-call () ((tar cat)))
-  (export-rpc-call () ((update)))
-  (export-rpc-call () ((urlstore add)))
-  (export-rpc-call () ((version)))
-  (export-rpc-call () ((version deps)))
 
 
   ;; The docs seem to suggest that some CLI commands don't have a corresponding
@@ -453,6 +440,14 @@
   (export-rpc-call (reader/plain) ((config replace)))
   (export-rpc-call ()             ((config show)))
 
+  (export-rpc-call ()             ((diag cmds)) (verbose Bool))
+  (export-rpc-call (reader/plain) ((diag cmds clear)))
+  (export-rpc-call (reader/plain) ((diag cmds set-time) (time String yes)))
+  (export-rpc-call (reader/plain) ((diag profile)) (output String) (cpu-profile-time String))
+  (export-rpc-call (reader/plain) ((diag sys)))
+
+  (export-rpc-call () ((dns) (domain String yes)) (recursive Bool))
+
   (export-rpc-call (reader/plain) ((files chcid) (path String no)) (cid-version Int) (hash String))
   (export-rpc-call (reader/plain) ((files cp) (from String yes) (to String yes)) (parents Bool))
   (export-rpc-call ()             ((files flush) (path String no)))
@@ -467,6 +462,8 @@
   (export-rpc-call (reader/plain) ((get) (path String yes)) (output String) (archive Bool) (compress Bool) (compression-level Int))
 
   (export-rpc-call () ((id) (peer String no)) (format String) (peerid-base String))
+
+  (export-rpc-call () ((ls) (path String yes)) (headers Bool) (resolve-type Bool) (size Bool) (stream Bool))
 
   (export-rpc-call () ((name publish) (path String yes)) (resolve Bool) (lifetime String) (allow-offline Bool) (ttl String) (key String) (quieter Bool) (ipns-base String))
   (export-rpc-call () ((name pubsub cancel) (path String yes)))
@@ -489,4 +486,14 @@
   (export-rpc-call () ((ping) (peer String yes)) (count Int))
 
   (export-rpc-call () ((resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
+
+  (export-rpc-call ()             ((tar add)))
+  (export-rpc-call (reader/plain) ((tar cat) (path String yes)))
+
+  (export-rpc-call (reader/plain) ((update) (arguments String no)))
+
+  (export-rpc-call () ((urlstore add) (url String yes)) (trickle Bool) (pin Bool))
+
+  (export-rpc-call () ((version)) (number Bool) (commit Bool) (repo Bool) (all Bool))
+  (export-rpc-call () ((version deps)))
   )
