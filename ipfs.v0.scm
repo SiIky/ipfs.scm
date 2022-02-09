@@ -306,21 +306,6 @@
   ;;; Enpoint procedures
   ;;;
 
-  ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((swarm addrs)))
-  (export-rpc-call () ((swarm addrs listen)))
-  (export-rpc-call () ((swarm addrs local)))
-  (export-rpc-call () ((swarm connect)))
-  (export-rpc-call () ((swarm disconnect)))
-  (export-rpc-call () ((swarm filters)))
-  (export-rpc-call () ((swarm filters add)))
-  (export-rpc-call () ((swarm filters rm)))
-  (export-rpc-call () ((swarm peering add)))
-  (export-rpc-call () ((swarm peering ls)))
-  (export-rpc-call () ((swarm peering rm)))
-  (export-rpc-call () ((swarm peers)))
-
-
   ;; The docs seem to suggest that some CLI commands don't have a corresponding
   ;;   HTTP endpoint. Endpoints that give HTTP 404:
   ;(export-rpc-call (reader/plain) ((commands completion bash)))
@@ -509,6 +494,19 @@
   (export-rpc-call () ((stats dht) (dht String no)))
   (export-rpc-call () ((stats provide)))
   (export-rpc-call () ((stats repo)) (size-only Bool) (human Bool))
+
+  (export-rpc-call () ((swarm addrs)))
+  (export-rpc-call () ((swarm addrs listen)))
+  (export-rpc-call () ((swarm addrs local)) (id Bool))
+  (export-rpc-call () ((swarm connect) (peer String yes)))
+  (export-rpc-call () ((swarm disconnect) (peer String yes)))
+  (export-rpc-call () ((swarm filters)))
+  (export-rpc-call () ((swarm filters add) (filter String yes)))
+  (export-rpc-call () ((swarm filters rm) (filter String yes)))
+  (export-rpc-call () ((swarm peering add) (peer String yes)))
+  (export-rpc-call () ((swarm peering ls)))
+  (export-rpc-call () ((swarm peering rm) (peer String yes)))
+  (export-rpc-call () ((swarm peers)) (verbose Bool) (streams Bool) (latency Bool) (directio Bool))
 
   (export-rpc-call ()             ((tar add)))
   (export-rpc-call (reader/plain) ((tar cat) (path String yes)))
