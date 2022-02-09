@@ -307,10 +307,6 @@
   ;;;
 
   ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((block get)))
-  (export-rpc-call () ((block put)))
-  (export-rpc-call () ((block rm)))
-  (export-rpc-call () ((block stat)))
   (export-rpc-call () ((bootstrap)))
   (export-rpc-call () ((bootstrap add)))
   (export-rpc-call () ((bootstrap add default)))
@@ -339,10 +335,6 @@
   (export-rpc-call () ((key rename)))
   (export-rpc-call () ((key rm)))
   (export-rpc-call () ((key rotate)))
-  (export-rpc-call () ((log level)))
-  (export-rpc-call () ((log ls)))
-  (export-rpc-call () ((log tail)))
-  (export-rpc-call () ((mount)))
   (export-rpc-call () ((multibase decode)))
   (export-rpc-call () ((multibase encode)))
   (export-rpc-call () ((multibase list)))
@@ -420,6 +412,11 @@
   (export-rpc-call ()             ((bitswap stat)) (verbose Bool) (human Bool))
   (export-rpc-call ()             ((bitswap wantlist)) (peer String))
 
+  (export-rpc-call (reader/plain) ((block get) (hash String yes)))
+  (export-rpc-call ()             ((block put)) (format String) (mhtype String) (mhlen Int) (pin Bool))
+  (export-rpc-call ()             ((block rm) (hash String yes)) (force Bool) (quiet Bool))
+  (export-rpc-call ()             ((block stat) (hash String yes)))
+
   (export-rpc-call (reader/plain) ((cat) (path String yes)) (offset Int) (length Int))
 
   (export-rpc-call () ((cid base32) (cid String yes)))
@@ -458,7 +455,13 @@
 
   (export-rpc-call () ((id) (peer String no)) (format String) (peerid-base String))
 
+  (export-rpc-call ()             ((log level) (subsystem String yes) (level String yes)))
+  (export-rpc-call ()             ((log ls)))
+  (export-rpc-call (reader/plain) ((log tail)))
+
   (export-rpc-call () ((ls) (path String yes)) (headers Bool) (resolve-type Bool) (size Bool) (stream Bool))
+
+  (export-rpc-call () ((mount)) (ipfs-path String) (ipns-path String))
 
   (export-rpc-call () ((name publish) (path String yes)) (resolve Bool) (lifetime String) (allow-offline Bool) (ttl String) (key String) (quieter Bool) (ipns-base String))
   (export-rpc-call () ((name pubsub cancel) (path String yes)))
