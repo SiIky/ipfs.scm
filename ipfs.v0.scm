@@ -125,9 +125,9 @@
       #:path path
       #:query query))
 
-  (define (make-request uri #!key (method 'POST))
+  (define (make-request uri)
     (request:make
-      #:method method
+      #:method 'POST
       #:uri uri))
 
   (define (call-request request #!key reader writer)
