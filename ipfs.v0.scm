@@ -316,10 +316,6 @@
   (export-rpc-call () ((bootstrap list)))
   (export-rpc-call () ((bootstrap rm)))
   (export-rpc-call () ((bootstrap rm all)))
-  (export-rpc-call () ((cid base32)))
-  (export-rpc-call () ((cid bases)))
-  (export-rpc-call () ((cid format)))
-  (export-rpc-call () ((cid hashes)))
   (export-rpc-call () ((dag export)))
   (export-rpc-call () ((dag get)))
   (export-rpc-call () ((dag import)))
@@ -444,7 +440,11 @@
 
   (export-rpc-call (reader/plain) ((cat) (path String yes)) (offset Int) (length Int))
 
-  (export-rpc-call () ((cid codecs)))
+  (export-rpc-call () ((cid base32) (cid String yes)))
+  (export-rpc-call () ((cid bases)) (prefix Bool) (numeric Bool))
+  (export-rpc-call () ((cid codecs)) (numeric Bool))
+  (export-rpc-call () ((cid format) (cid String yes)) (f String) (v String) (codec String) (b String))
+  (export-rpc-call () ((cid hashes)) (numeric Bool))
 
   (export-rpc-call () ((commands)) (flags Bool))
 

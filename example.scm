@@ -1,4 +1,4 @@
-(import chicken.base)
+(import chicken.base chicken.pretty-print)
 
 (import
   intarweb
@@ -7,6 +7,6 @@
 (import ipfs)
 
 (receive (res uri rep) (add #:writer (writer/file "ipfs.scm") #:pin #f #:cid-version 1)
-  (print res)
-  (print (uri->string uri))
-  (print rep))
+  (pp res)
+  (pp (uri->string uri))
+  (pp rep))
