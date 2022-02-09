@@ -351,7 +351,9 @@
   (export-rpc-call () ((files write) (path String yes)) (offset Int) (create Bool) (parents Bool) (truncate Bool) (count Int) (raw-leaves Bool) (cid-version Int) (hash String))
 
   ; filestore
-  ; get
+
+  (export-rpc-call (reader/plain) ((get) (path String yes)) (output String) (archive Bool) (compress Bool) (compression-level Int))
+
   ; id
   ; key
   ; log
