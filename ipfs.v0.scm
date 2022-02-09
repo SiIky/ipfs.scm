@@ -105,8 +105,8 @@
   (define (call-request request #!key reader writer)
     (with-input-from-request request writer reader))
 
-  (define (call-uri uri #!key (method 'POST) reader writer)
-    (call-request (make-request uri #:method method) #:reader reader #:writer writer))
+  (define (call-uri uri #!key reader writer)
+    (call-request (make-request uri) #:reader reader #:writer writer))
 
 
   (define make-query
