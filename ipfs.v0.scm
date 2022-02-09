@@ -308,7 +308,7 @@
            (define ,%name (make-rpc-lambda ,reader/writer ,path ,arguments ,flags))))))
 
   (export-rpc-call
-    (reader/json writer/filesystem)
+    ()
     ((add))
     (quiet bool)
     (quieter bool)
