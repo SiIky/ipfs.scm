@@ -309,11 +309,11 @@
     (export-rpc-call reader/writer (path . arguments) . flags)
     (with-implicit-renaming
       (=? %name)
-      (let* ((%name
-               (=> path
-                   (map (o symbol->string strip-syntax) _)
-                   (string-join _ "/")
-                   (string->symbol _))))
+      (let ((%name
+              (=> path
+                  (map (o symbol->string strip-syntax) _)
+                  (string-join _ "/")
+                  (string->symbol _))))
         `(begin
            (export ,%name)
            (define ,%name (make-rpc-lambda ,reader/writer ,path ,arguments ,flags))))))
