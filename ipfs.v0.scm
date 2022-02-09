@@ -62,6 +62,8 @@
   (define-constant %version% "v0")
   (define %nothing% (nothing))
 
+  ; NOTE: HTTP rather than HTTPS because I expect using the library to
+  ;       communicate with a locally running IPFS instance will be the norm.
   (define *scheme* (make-parameter 'http))
   (define *host* (make-parameter "localhost"))
   (define *port* (make-parameter 5001))
