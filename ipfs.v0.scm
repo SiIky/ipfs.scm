@@ -20,7 +20,11 @@
    )
 
   (import
-    (except scheme apply)
+    (except scheme
+            apply
+            force
+            truncate
+            write)
     (only chicken.base
           assert
           cute
@@ -332,8 +336,20 @@
   ; dht
   ; diag
   ; dns
-  ; file ?
-  ; files
+
+  ; The docs say `file/ls` is deprecated and recommend using `ls` instead.
+
+  (export-rpc-call () ((files chcid) (path String no)) (cid-version Int) (hash String))
+  (export-rpc-call () ((files cp) (from String yes) (to String yes)) (parents Bool))
+  (export-rpc-call () ((files flush) (path String no)))
+  (export-rpc-call () ((files ls) (path String no)) (long Bool) (U Bool))
+  (export-rpc-call () ((files mkdir) (path String yes)) (parents Bool) (cid-version Int) (hash String))
+  (export-rpc-call () ((files mv) (from String yes) (to String yes)))
+  (export-rpc-call (reader/plain) ((files read) (path String yes)) (offset Int) (count Int))
+  (export-rpc-call () ((files rm) (path String yes)) (recursive Bool) (force Bool))
+  (export-rpc-call () ((files stat) (path String yes)) (format String) (hash Bool) (size Bool) (with-local Bool))
+  (export-rpc-call () ((files write) (path String yes)) (offset Int) (create Bool) (parents Bool) (truncate Bool) (count Int) (raw-leaves Bool) (cid-version Int) (hash String))
+
   ; filestore
   ; get
   ; id
