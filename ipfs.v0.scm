@@ -307,12 +307,6 @@
   ;;;
 
   ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((bootstrap)))
-  (export-rpc-call () ((bootstrap add)))
-  (export-rpc-call () ((bootstrap add default)))
-  (export-rpc-call () ((bootstrap list)))
-  (export-rpc-call () ((bootstrap rm)))
-  (export-rpc-call () ((bootstrap rm all)))
   (export-rpc-call () ((dag export)))
   (export-rpc-call () ((dag get)))
   (export-rpc-call () ((dag import)))
@@ -325,9 +319,6 @@
   (export-rpc-call () ((dht provide)))
   (export-rpc-call () ((dht put)))
   (export-rpc-call () ((dht query)))
-  (export-rpc-call () ((filestore dups)))
-  (export-rpc-call () ((filestore ls)))
-  (export-rpc-call () ((filestore verify)))
   (export-rpc-call () ((key export)))
   (export-rpc-call () ((key gen)))
   (export-rpc-call () ((key import)))
@@ -360,13 +351,6 @@
   (export-rpc-call () ((pubsub peers)))
   (export-rpc-call () ((pubsub pub)))
   (export-rpc-call () ((pubsub sub)))
-  (export-rpc-call () ((refs)))
-  (export-rpc-call () ((refs local)))
-  (export-rpc-call () ((repo fsck)))
-  (export-rpc-call () ((repo gc)))
-  (export-rpc-call () ((repo stat)))
-  (export-rpc-call () ((repo verify)))
-  (export-rpc-call () ((repo version)))
   (export-rpc-call () ((swarm addrs)))
   (export-rpc-call () ((swarm addrs listen)))
   (export-rpc-call () ((swarm addrs local)))
@@ -417,6 +401,13 @@
   (export-rpc-call ()             ((block rm) (hash String yes)) (force Bool) (quiet Bool))
   (export-rpc-call ()             ((block stat) (hash String yes)))
 
+  (export-rpc-call () ((bootstrap)))
+  (export-rpc-call () ((bootstrap add) (peer String no)) (default Bool))
+  (export-rpc-call () ((bootstrap add default)))
+  (export-rpc-call () ((bootstrap list)))
+  (export-rpc-call () ((bootstrap rm) (peer String no)))
+  (export-rpc-call () ((bootstrap rm all)))
+
   (export-rpc-call (reader/plain) ((cat) (path String yes)) (offset Int) (length Int))
 
   (export-rpc-call () ((cid base32) (cid String yes)))
@@ -451,6 +442,10 @@
   (export-rpc-call ()             ((files stat) (path String yes)) (format String) (hash Bool) (size Bool) (with-local Bool))
   (export-rpc-call (reader/plain) ((files write) (path String yes)) (offset Int) (create Bool) (parents Bool) (truncate Bool) (count Int) (raw-leaves Bool) (cid-version Int) (hash String))
 
+  (export-rpc-call () ((filestore dups)))
+  (export-rpc-call () ((filestore ls) (cid String no)) (file-order Bool))
+  (export-rpc-call () ((filestore verify) (cid String no)) (file-order Bool))
+
   (export-rpc-call (reader/plain) ((get) (path String yes)) (output String) (archive Bool) (compress Bool) (compression-level Int))
 
   (export-rpc-call () ((id) (peer String no)) (format String) (peerid-base String))
@@ -482,6 +477,15 @@
   (export-rpc-call (reader/plain) ((pin remote service rm) (name String yes)))
 
   (export-rpc-call () ((ping) (peer String yes)) (count Int))
+
+  (export-rpc-call () ((refs) (path String yes)) (format String) (edges Bool) (unique Bool) (recursive Bool) (max-depth Int))
+  (export-rpc-call () ((refs local)))
+
+  (export-rpc-call () ((repo fsck)))
+  (export-rpc-call () ((repo gc)) (stream-errors Bool) (quiet Bool))
+  (export-rpc-call () ((repo stat)) (size-only Bool) (human Bool))
+  (export-rpc-call () ((repo verify)))
+  (export-rpc-call () ((repo version)) (quiet Bool))
 
   (export-rpc-call () ((resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
 
