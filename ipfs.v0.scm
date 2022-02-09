@@ -327,6 +327,11 @@
     (inline bool)
     (inline-limit int))
 
+  (export-rpc-call () ((bitswap ledger) (peer string yes)))
+  (export-rpc-call () ((bitswap reprovide)))
+  (export-rpc-call () ((bitswap stat)) (verbose bool) (human bool))
+  (export-rpc-call () ((bitswap wantlist)) (peer string))
+
   (export-rpc-call (reader/plain) ((cat) (path string yes)) (offset int) (length int))
   (export-rpc-call () ((commands)) (flags bool))
   (export-rpc-call () ((commands completion bash)))
