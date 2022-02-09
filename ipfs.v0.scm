@@ -286,10 +286,140 @@
   ;;; Enpoint procedures
   ;;;
 
+  ; List of all the endpoints still not defined according to the docs.
+  (export-rpc-call () ((bitswap ledger)))
+  (export-rpc-call () ((bitswap reprovide)))
+  (export-rpc-call () ((bitswap stat)))
+  (export-rpc-call () ((bitswap wantlist)))
+  (export-rpc-call () ((block get)))
+  (export-rpc-call () ((block put)))
+  (export-rpc-call () ((block rm)))
+  (export-rpc-call () ((block stat)))
+  (export-rpc-call () ((bootstrap)))
+  (export-rpc-call () ((bootstrap add)))
+  (export-rpc-call () ((bootstrap add default)))
+  (export-rpc-call () ((bootstrap list)))
+  (export-rpc-call () ((bootstrap rm)))
+  (export-rpc-call () ((bootstrap rm all)))
+  (export-rpc-call () ((cid base32)))
+  (export-rpc-call () ((cid bases)))
+  (export-rpc-call () ((cid format)))
+  (export-rpc-call () ((cid hashes)))
+  (export-rpc-call () ((dag export)))
+  (export-rpc-call () ((dag get)))
+  (export-rpc-call () ((dag import)))
+  (export-rpc-call () ((dag put)))
+  (export-rpc-call () ((dag resolve)))
+  (export-rpc-call () ((dag stat)))
+  (export-rpc-call () ((dht findpeer)))
+  (export-rpc-call () ((dht findprovs)))
+  (export-rpc-call () ((dht get)))
+  (export-rpc-call () ((dht provide)))
+  (export-rpc-call () ((dht put)))
+  (export-rpc-call () ((dht query)))
+  (export-rpc-call () ((diag cmds)))
+  (export-rpc-call () ((diag cmds clear)))
+  (export-rpc-call () ((diag cmds set-time)))
+  (export-rpc-call () ((diag profile)))
+  (export-rpc-call () ((diag sys)))
+  (export-rpc-call () ((dns)))
+  (export-rpc-call () ((filestore dups)))
+  (export-rpc-call () ((filestore ls)))
+  (export-rpc-call () ((filestore verify)))
+  (export-rpc-call () ((id)))
+  (export-rpc-call () ((key export)))
+  (export-rpc-call () ((key gen)))
+  (export-rpc-call () ((key import)))
+  (export-rpc-call () ((key list)))
+  (export-rpc-call () ((key rename)))
+  (export-rpc-call () ((key rm)))
+  (export-rpc-call () ((key rotate)))
+  (export-rpc-call () ((log level)))
+  (export-rpc-call () ((log ls)))
+  (export-rpc-call () ((log tail)))
+  (export-rpc-call () ((ls)))
+  (export-rpc-call () ((mount)))
+  (export-rpc-call () ((multibase decode)))
+  (export-rpc-call () ((multibase encode)))
+  (export-rpc-call () ((multibase list)))
+  (export-rpc-call () ((multibase transcode)))
+  (export-rpc-call () ((name publish)))
+  (export-rpc-call () ((name pubsub cancel)))
+  (export-rpc-call () ((name pubsub state)))
+  (export-rpc-call () ((name pubsub subs)))
+  (export-rpc-call () ((name resolve)))
+  (export-rpc-call () ((object data)))
+  (export-rpc-call () ((object diff)))
+  (export-rpc-call () ((object get)))
+  (export-rpc-call () ((object links)))
+  (export-rpc-call () ((object new)))
+  (export-rpc-call () ((object patch add-link)))
+  (export-rpc-call () ((object patch append-data)))
+  (export-rpc-call () ((object patch rm-link)))
+  (export-rpc-call () ((object patch set-data)))
+  (export-rpc-call () ((object put)))
+  (export-rpc-call () ((object stat)))
+  (export-rpc-call () ((p2p close)))
+  (export-rpc-call () ((p2p forward)))
+  (export-rpc-call () ((p2p listen)))
+  (export-rpc-call () ((p2p ls)))
+  (export-rpc-call () ((p2p stream close)))
+  (export-rpc-call () ((p2p stream ls)))
+  (export-rpc-call () ((pin add)))
+  (export-rpc-call () ((pin ls)))
+  (export-rpc-call () ((pin remote add)))
+  (export-rpc-call () ((pin remote ls)))
+  (export-rpc-call () ((pin remote rm)))
+  (export-rpc-call () ((pin remote service add)))
+  (export-rpc-call () ((pin remote service ls)))
+  (export-rpc-call () ((pin remote service rm)))
+  (export-rpc-call () ((pin rm)))
+  (export-rpc-call () ((pin update)))
+  (export-rpc-call () ((pin verify)))
+  (export-rpc-call () ((ping)))
+  (export-rpc-call () ((pubsub ls)))
+  (export-rpc-call () ((pubsub peers)))
+  (export-rpc-call () ((pubsub pub)))
+  (export-rpc-call () ((pubsub sub)))
+  (export-rpc-call () ((refs)))
+  (export-rpc-call () ((refs local)))
+  (export-rpc-call () ((repo fsck)))
+  (export-rpc-call () ((repo gc)))
+  (export-rpc-call () ((repo stat)))
+  (export-rpc-call () ((repo verify)))
+  (export-rpc-call () ((repo version)))
+  (export-rpc-call () ((resolve)))
+  (export-rpc-call () ((shutdown)))
+  (export-rpc-call () ((stats bitswap)))
+  (export-rpc-call () ((stats bw)))
+  (export-rpc-call () ((stats dht)))
+  (export-rpc-call () ((stats provide)))
+  (export-rpc-call () ((stats repo)))
+  (export-rpc-call () ((swarm addrs)))
+  (export-rpc-call () ((swarm addrs listen)))
+  (export-rpc-call () ((swarm addrs local)))
+  (export-rpc-call () ((swarm connect)))
+  (export-rpc-call () ((swarm disconnect)))
+  (export-rpc-call () ((swarm filters)))
+  (export-rpc-call () ((swarm filters add)))
+  (export-rpc-call () ((swarm filters rm)))
+  (export-rpc-call () ((swarm peering add)))
+  (export-rpc-call () ((swarm peering ls)))
+  (export-rpc-call () ((swarm peering rm)))
+  (export-rpc-call () ((swarm peers)))
+  (export-rpc-call () ((tar add)))
+  (export-rpc-call () ((tar cat)))
+  (export-rpc-call () ((update)))
+  (export-rpc-call () ((urlstore add)))
+  (export-rpc-call () ((version)))
+  (export-rpc-call () ((version deps)))
+
+
   ;; The docs seem to suggest that some CLI commands don't have a corresponding
   ;;   HTTP endpoint. Endpoints that give HTTP 404:
   ;(export-rpc-call (reader/plain) ((commands completion bash)))
   ;(export-rpc-call (reader/plain) ((config edit)))
+
 
   (export-rpc-call
     ()
@@ -316,64 +446,27 @@
   (export-rpc-call () ((bitswap stat)) (verbose Bool) (human Bool))
   (export-rpc-call () ((bitswap wantlist)) (peer String))
 
-  ; block
-  ; bootstrap
-
   (export-rpc-call (reader/plain) ((cat) (path String yes)) (offset Int) (length Int))
 
-  ; cid
   (export-rpc-call () ((cid codecs)))
 
-  ; commands
   (export-rpc-call () ((commands)) (flags Bool))
 
-  (export-rpc-call () ((config) (key String yes) (value String no)) (bool Bool) (json Bool))
-  (export-rpc-call () ((config profile apply) (profile String yes)) (dry-run Bool))
+  (export-rpc-call ()             ((config) (key String yes) (value String no)) (bool Bool) (json Bool))
+  (export-rpc-call ()             ((config profile apply) (profile String yes)) (dry-run Bool))
   (export-rpc-call (reader/plain) ((config replace)))
-  (export-rpc-call () ((config show)))
-
-  ; dag
-  ; dht
-  ; diag
-  ; dns
-
-  ; The docs say `file/ls` is deprecated and recommend using `ls` instead.
+  (export-rpc-call ()             ((config show)))
 
   (export-rpc-call (reader/plain) ((files chcid) (path String no)) (cid-version Int) (hash String))
   (export-rpc-call (reader/plain) ((files cp) (from String yes) (to String yes)) (parents Bool))
-  (export-rpc-call () ((files flush) (path String no)))
-  (export-rpc-call () ((files ls) (path String no)) (long Bool) (U Bool))
+  (export-rpc-call ()             ((files flush) (path String no)))
+  (export-rpc-call ()             ((files ls) (path String no)) (long Bool) (U Bool))
   (export-rpc-call (reader/plain) ((files mkdir) (path String yes)) (parents Bool) (cid-version Int) (hash String))
   (export-rpc-call (reader/plain) ((files mv) (from String yes) (to String yes)))
   (export-rpc-call (reader/plain) ((files read) (path String yes)) (offset Int) (count Int))
   (export-rpc-call (reader/plain) ((files rm) (path String yes)) (recursive Bool) (force Bool))
-  (export-rpc-call () ((files stat) (path String yes)) (format String) (hash Bool) (size Bool) (with-local Bool))
+  (export-rpc-call ()             ((files stat) (path String yes)) (format String) (hash Bool) (size Bool) (with-local Bool))
   (export-rpc-call (reader/plain) ((files write) (path String yes)) (offset Int) (create Bool) (parents Bool) (truncate Bool) (count Int) (raw-leaves Bool) (cid-version Int) (hash String))
 
-  ; filestore
-
   (export-rpc-call (reader/plain) ((get) (path String yes)) (output String) (archive Bool) (compress Bool) (compression-level Int))
-
-  ; id
-  ; key
-  ; log
-  ; ls
-  ; mount
-  ; multibase
-  ; name
-  ; object
-  ; p2p
-  ; pin
-  ; ping
-  ; pubsub
-  ; refs
-  ; repo
-  ; resolve
-  ; shutdown
-  ; stats
-  ; swarm
-  ; tar
-  ; update
-  ; urlstore
-  ; version
   )
