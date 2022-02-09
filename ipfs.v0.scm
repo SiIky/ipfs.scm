@@ -254,7 +254,7 @@
     bindings
     (only chicken.syntax strip-syntax)
     (only srfi-13 string-join)
-    (only srfi-197 chain-lambda))
+    (only srfi-197 chain))
 
   ;; @brief Defines and exports an RPC procedure created with make-rpc-lambda.
   ;;
@@ -272,12 +272,11 @@
     (export-rpc-call reader/writer (path . arguments) . flags)
     (with-implicit-renaming
       (=? %name)
-      (let* ((make-name
-               (chain-lambda
-                 (map (o symbol->string strip-syntax) _)
-                 (string-join _ "/")
-                 (string->symbol _)))
-             (%name (make-name path)))
+      (let* ((%name
+               (chain path
+                      (map (o symbol->string strip-syntax) _)
+                      (string-join _ "/")
+                      (string->symbol _))))
         `(begin
            (export ,%name)
            (define ,%name (make-rpc-lambda ,reader/writer ,path ,arguments ,flags))))))
@@ -471,7 +470,7 @@
   (export-rpc-call ()             ((pin remote service ls)) (stat Bool))
   (export-rpc-call (reader/plain) ((pin remote service rm) (name String yes)))
 
-  (export-rpc-call () ((ping) (id String yes)) (count int))
+  (export-rpc-call () ((ping) (id String yes)) (count Int))
 
   (export-rpc-call () ((resolve) (name String no)) (recursive Bool) (nocache Bool) (dht-record-count Int) (dht-timeout String) (stream Bool))
   )
