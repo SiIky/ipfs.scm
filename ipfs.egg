@@ -22,13 +22,11 @@
    )
  (components
    (extension ipfs
-              (types-file)
               (component-dependencies ipfs.v0)
               (modules ipfs)
               (source ipfs.scm))
 
    (extension ipfs.v0
-              (types-file)
               (modules ipfs.v0)
               (source ipfs.v0.scm))
    ))
