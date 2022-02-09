@@ -50,6 +50,7 @@
     (rename (only intarweb make-request)
             (make-request request:make))
     (only http-client with-input-from-request)
+    openssl
     matchable)
 
   (import
