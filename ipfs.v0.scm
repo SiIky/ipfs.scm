@@ -109,12 +109,7 @@
     "")
 
   (define (make-uri #!key (scheme (*scheme*)) (host (*host*)) (port (*port*)) path query)
-    (uri:make
-      #:scheme scheme
-      #:host host
-      #:port port
-      #:path path
-      #:query query))
+    (uri:make #:scheme scheme #:host host #:port port #:path path #:query query))
 
   (define (make-request uri)
     (request:make
@@ -160,7 +155,9 @@
         (maybe-bind _ (cute type-cast (->string argname) <>))))
 
   (define (*->bool name value) (just (if value "true" "false")))
-  (define (*->string name value) (just (->string value)))
+  (define (*->string name value)
+    (assert (not (not value)) (string-append name "must not be false"))
+    (just (->string value)))
   (define (*->number name n)
     (assert (number? n) (string-append name " must be an integer"))
     (just n))
@@ -189,9 +186,8 @@
     (type-wrapper (*->array type)))
 
 
-  (define (rpc-call path arguments flags #!key reader writer)
-    (=> (append (make-query arguments)
-                (make-query flags))
+  (define (rpc-call path arguments #!key reader writer)
+    (=> (make-query arguments)
         (make-uri #:path path #:query _)
         (call-uri _ #:reader reader #:writer writer)))
 
@@ -264,8 +260,10 @@
                   (argument %nothing%) ...
                   (flag %nothing%) ...)
            (rpc-call path
-                     `((arg . ,(atype 'argument (required? 'argument argument))) ...)
-                     `((flag . ,(ftype 'flag flag)) ...)
+                     `((arg . ,(atype 'argument (required? 'argument argument)))
+                       ...
+                       (flag . ,(ftype 'flag flag))
+                       ...)
                      #:reader reader
                      #:writer writer))))))
 
