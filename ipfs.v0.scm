@@ -307,17 +307,6 @@
   ;;;
 
   ; List of all the endpoints still not defined according to the docs.
-  (export-rpc-call () ((key export)))
-  (export-rpc-call () ((key gen)))
-  (export-rpc-call () ((key import)))
-  (export-rpc-call () ((key list)))
-  (export-rpc-call () ((key rename)))
-  (export-rpc-call () ((key rm)))
-  (export-rpc-call () ((key rotate)))
-  (export-rpc-call () ((multibase decode)))
-  (export-rpc-call () ((multibase encode)))
-  (export-rpc-call () ((multibase list)))
-  (export-rpc-call () ((multibase transcode)))
   (export-rpc-call () ((object data)))
   (export-rpc-call () ((object diff)))
   (export-rpc-call () ((object get)))
@@ -335,10 +324,6 @@
   (export-rpc-call () ((p2p ls)))
   (export-rpc-call () ((p2p stream close)))
   (export-rpc-call () ((p2p stream ls)))
-  (export-rpc-call () ((pubsub ls)))
-  (export-rpc-call () ((pubsub peers)))
-  (export-rpc-call () ((pubsub pub)))
-  (export-rpc-call () ((pubsub sub)))
   (export-rpc-call () ((swarm addrs)))
   (export-rpc-call () ((swarm addrs listen)))
   (export-rpc-call () ((swarm addrs local)))
@@ -452,6 +437,14 @@
 
   (export-rpc-call () ((id) (peer String no)) (format String) (peerid-base String))
 
+  (export-rpc-call (reader/plain) ((key export) (key String yes)) (output String))
+  (export-rpc-call ()             ((key gen) (name String yes)) (type String) (size Int) (ipns-base String))
+  (export-rpc-call ()             ((key import) (name String yes)) (ipns-base String))
+  (export-rpc-call ()             ((key list)) (l Bool) (ipns-base String))
+  (export-rpc-call ()             ((key rename) (old-name String yes) (new-name String yes)) (force Bool) (ipns-base Bool))
+  (export-rpc-call ()             ((key rm) (name String yes)) (l Bool) (ipns-base String))
+  (export-rpc-call (reader/plain) ((key rotate)) (oldkey String) (type String) (size Int))
+
   (export-rpc-call ()             ((log level) (subsystem String yes) (level String yes)))
   (export-rpc-call ()             ((log ls)))
   (export-rpc-call (reader/plain) ((log tail)))
@@ -459,6 +452,11 @@
   (export-rpc-call () ((ls) (path String yes)) (headers Bool) (resolve-type Bool) (size Bool) (stream Bool))
 
   (export-rpc-call () ((mount)) (ipfs-path String) (ipns-path String))
+
+  (export-rpc-call (reader/plain) ((multibase decode)))
+  (export-rpc-call (reader/plain) ((multibase encode)) (b String))
+  (export-rpc-call ()             ((multibase list)) (prefix Bool) (numeric Bool))
+  (export-rpc-call (reader/plain) ((multibase transcode)) (b String))
 
   (export-rpc-call () ((name publish) (path String yes)) (resolve Bool) (lifetime String) (allow-offline Bool) (ttl String) (key String) (quieter Bool) (ipns-base String))
   (export-rpc-call () ((name pubsub cancel) (path String yes)))
@@ -479,6 +477,11 @@
   (export-rpc-call (reader/plain) ((pin remote service rm) (name String yes)))
 
   (export-rpc-call () ((ping) (peer String yes)) (count Int))
+
+  (export-rpc-call ()             ((pubsub ls)))
+  (export-rpc-call ()             ((pubsub peers) (topic String no)))
+  (export-rpc-call (reader/plain) ((pubsub pub) (topic String yes)))
+  (export-rpc-call ()             ((pubsub sub) (topic String yes)))
 
   (export-rpc-call () ((refs) (path String yes)) (format String) (edges Bool) (unique Bool) (recursive Bool) (max-depth Int))
   (export-rpc-call () ((refs local)))
