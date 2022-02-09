@@ -20,7 +20,7 @@
    )
 
   (import
-    (except scheme string)
+    (except scheme apply)
     (only chicken.base
           assert
           cute
@@ -282,6 +282,11 @@
   ;;; Enpoint procedures
   ;;;
 
+  ;; The docs seem to suggest that some CLI commands don't have a corresponding
+  ;;   HTTP endpoint. Endpoints that give HTTP 404:
+  ;(export-rpc-call () ((commands completion bash)))
+  ;(export-rpc-call () ((config edit)))
+
   (export-rpc-call
     ()
     ((add))
@@ -317,9 +322,12 @@
 
   ; commands
   (export-rpc-call () ((commands)) (flags Bool))
-  (export-rpc-call () ((commands completion bash)))
 
-  ; config
+  (export-rpc-call () ((config) (key String yes) (value String no)) (bool Bool) (json Bool))
+  (export-rpc-call () ((config profile apply) (profile String yes)) (dry-run Bool))
+  (export-rpc-call () ((config replace)))
+  (export-rpc-call () ((config show)))
+
   ; dag
   ; dht
   ; diag
