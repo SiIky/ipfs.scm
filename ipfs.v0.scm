@@ -322,12 +322,6 @@
   ;;; Enpoint procedures
   ;;;
 
-  ;; The docs seem to suggest that some CLI commands don't have a corresponding
-  ;;   HTTP endpoint. Endpoints that give HTTP 404:
-  ;(export-rpc-call (reader/plain) ((commands completion bash)))
-  ;(export-rpc-call (reader/plain) ((config edit)))
-
-
   (export-rpc-call
     ()
     ((add))
@@ -400,8 +394,7 @@
   (export-rpc-call
     ()
     ((bootstrap add)
-     (String peer no))
-    (Bool default))
+     (String peer no)))
 
   (export-rpc-call
     ()
@@ -831,11 +824,6 @@
     (String dht-timeout)
     (Bool stream))
 
-  (export-rpc-call
-    (reader/plain)
-    ((object data)
-     (String key yes)))
-
   ; TODO: Maybe change `obj1` & `obj2` to better names.
   (export-rpc-call
     ()
@@ -843,63 +831,6 @@
      (String obj1 yes)
      (String obj2 yes))
     (Bool verbose))
-
-  ; Deprecated, use `dag/get` instead.
-  ; TODO: Find all the deprecated endpoints.
-  (export-rpc-call
-    ()
-    ((object get)
-     (String key yes))
-    (String data-encoding))
-
-  (export-rpc-call
-    ()
-    ((object links)
-     (String key yes))
-    (Bool headers))
-
-  (export-rpc-call
-    ()
-    ((object new)
-     (String template no)))
-
-  (export-rpc-call
-    ()
-    ((object patch add-link)
-     (String hash yes)
-     (String name yes)
-     (String object yes))
-    (Bool create))
-
-  (export-rpc-call
-    ()
-    ((object patch append-data)
-     (String hash yes)))
-
-  (export-rpc-call
-    ()
-    ((object patch rm-link)
-     (String hash yes)
-     (String name yes)))
-
-  (export-rpc-call
-    ()
-    ((object patch set-data)
-     (String hash yes)))
-
-  (export-rpc-call
-    ()
-    ((object put))
-    (String inputenc)
-    (String datafieldenc)
-    (Bool pin)
-    (Bool quiet))
-
-  (export-rpc-call
-    ()
-    ((object stat)
-     (String key yes))
-    (Bool human))
 
   ; TODO: Didn't understand the example response of the docs; try to get an
   ;       actual example.
@@ -1218,4 +1149,84 @@
   (export-rpc-call
     ()
     ((version deps)))
+
+  ;; The docs seem to suggest that some CLI commands don't have a corresponding
+  ;;   HTTP endpoint. These endpoints give HTTP 404:
+
+  ;(export-rpc-call
+  ;  (reader/plain)
+  ;  ((commands completion bash)))
+
+  ;(export-rpc-call
+  ;  (reader/plain)
+  ;  ((config edit)))
+
+  ;;;
+  ;;; Deprecated endpoints
+  ;;;
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((file ls)
+  ;   (String path yes)))
+
+  ;(export-rpc-call
+  ;  (reader/plain)
+  ;  ((object data)
+  ;   (String key yes)))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object get)
+  ;   (String key yes))
+  ;  (String data-encoding))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object links)
+  ;   (String key yes))
+  ;  (Bool headers))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object new)
+  ;   (String template no)))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object patch add-link)
+  ;   (String hash yes)
+  ;   (String name yes)
+  ;   (String object yes))
+  ;  (Bool create))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object patch append-data)
+  ;   (String hash yes)))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object patch rm-link)
+  ;   (String hash yes)
+  ;   (String name yes)))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object patch set-data)
+  ;   (String hash yes)))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object put))
+  ;  (String inputenc)
+  ;  (String datafieldenc)
+  ;  (Bool pin)
+  ;  (Bool quiet))
+
+  ;(export-rpc-call
+  ;  ()
+  ;  ((object stat)
+  ;   (String key yes))
+  ;  (Bool human))
   )
