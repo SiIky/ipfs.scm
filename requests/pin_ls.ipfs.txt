@@ -1,0 +1,8 @@
+POST /api/v0/pin/ls?arg=bafkreicd47ynzf6it5ssdwryvhksy6ylm4s42jlwzjbxhv5zlkw6mwbooq&encoding=json&stream-channels=true&type=all HTTP/1.1
+Host: 127.0.0.1:5006
+User-Agent: go-ipfs-cmds/http
+Connection: close
+Content-Length: 0
+Content-Type: application/octet-stream
+Accept-Encoding: gzip
+

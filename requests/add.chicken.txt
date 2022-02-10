@@ -1,0 +1,16 @@
+POST /api/v0/add?pin=false;cid-version=1 HTTP/1.1
+Content-Length: 335
+Content-Type: multipart/form-data; boundary="----------------Multipart-=_boundary199=_=707748=-=1644521912"
+Host: localhost:5006
+User-Agent: http-client/1.2 (CHICKEN Scheme HTTP-client)
+
+------------------Multipart-=_boundary199=_=707748=-=1644521912
+Content-Disposition: form-data; name="ipfs.scm"; filename="ipfs.scm"
+Content-Type: application/octet-stream
+
+(module ipfs *
+  (import scheme chicken.module)
+  (import ipfs.v0)
+  (reexport ipfs.v0))
+
+------------------Multipart-=_boundary199=_=707748=-=1644521912--

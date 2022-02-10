@@ -1,0 +1,27 @@
+POST /api/v0/add?chunker=size-262144&cid-version=1&encoding=json&hash=sha2-256&inline-limit=32&pin=false&progress=true&stream-channels=true HTTP/1.1
+Host: 127.0.0.1:5006
+User-Agent: go-ipfs-cmds/http
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: multipart/form-data; boundary=71406d6fed0e080f0849841195da9de26034c72cdb17f4328b30649342fd
+Accept-Encoding: gzip
+
+dd
+--71406d6fed0e080f0849841195da9de26034c72cdb17f4328b30649342fd
+Abspath: /absolute/path/to/ipfs.scm
+Content-Disposition: form-data; name="file"; filename="ipfs.scm"
+Content-Type: application/octet-stream
+
+
+59
+(module ipfs *
+  (import scheme chicken.module)
+  (import ipfs.v0)
+  (reexport ipfs.v0))
+
+44
+
+--71406d6fed0e080f0849841195da9de26034c72cdb17f4328b30649342fd--
+
+0
+
