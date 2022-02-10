@@ -142,10 +142,8 @@
   ;;   flag.
   ;; @returns The final alist of (key . value) pairs used in `make-uri`.
   (define make-query
-    (-> (map
-          ; (K, Maybe V) -> Maybe (K, V)
-          (match-lambda ((k . v) (maybe-map (cute cons k <>) v)))
-          _)
+    ;        (K, Maybe V) -> Maybe (K, V)
+    (-> (map (match-lambda ((k . v) (maybe-map (cute cons k <>) v))) _)
         (filter just? _)
         (append-map
           (o
@@ -169,19 +167,21 @@
   (define ((type-wrapper type-cast) argname value)
     (=> value
         (->maybe _)
-        ; TODO: Use maybe-bind instead so that type functions may fail
         (maybe-bind _ (cute type-cast (->string argname) <>))))
 
   (define (*->bool name value) (just (if value "true" "false")))
   (define (*->string name value)
-    (assert (not (not value)) (string-append name "must not be false"))
+    (assert (not (not value))
+            (string-append name "must not be false"))
     (just (->string value)))
-  (define (*->number name n)
-    (assert (number? n) (string-append name " must be an integer"))
+  (define (*->int name n)
+    (assert (number? n)
+            (string-append name " must be an integer"))
     (just n))
 
   (define ((*->array Type) name lst)
-    (assert (list? lst) (string-append name " must be a list"))
+    (assert (list? lst)
+            (string-append name " must be a list"))
     (let ((elem-name (string-append "element of " name)))
       (=> lst
           (map (o maybe->values (cute Type elem-name <>)) _)
@@ -189,17 +189,11 @@
           (string-append "[" _ "]")
           (just _))))
 
-  ;; NOTE: The only types listed on the official documentation, as of now, are:
-  ;;   * Bool
-  ;;   * Int (int, uint, int64)
-  ;;   * String
-  ;;   * Array
+  ;; TODO: Find the difference between the integer types for the API.
   ;; @see https://docs.ipfs.io/reference/http/api
-  ;; TODO: Find the difference between the integer types for the API
   (define Bool (type-wrapper *->bool))
-  (define Int (type-wrapper *->number))
+  (define Int (type-wrapper *->int))
   (define String (type-wrapper *->string))
-
   (define (Array type)
     (type-wrapper (*->array type)))
 
