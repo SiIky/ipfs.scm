@@ -174,9 +174,14 @@
     (assert (not (not value))
             (string-append name "must not be false"))
     (just (->string value)))
+
   (define (*->int name n)
-    (assert (number? n)
+    (assert (integer? n)
             (string-append name " must be an integer"))
+    (just n))
+  (define (*->uint name n)
+    (assert (and (integer? n) (positive? n))
+            (string-append name " must be a positive integer"))
     (just n))
 
   (define ((*->array Type) name lst)
@@ -193,6 +198,7 @@
   ;; @see https://docs.ipfs.io/reference/http/api
   (define Bool (type-wrapper *->bool))
   (define Int (type-wrapper *->int))
+  (define UInt (type-wrapper *->uint))
   (define String (type-wrapper *->string))
   (define (Array type)
     (type-wrapper (*->array type)))
@@ -814,7 +820,7 @@
      (String name no))
     (Bool recursive)
     (Bool nocache)
-    (Int dht-record-count)
+    (UInt dht-record-count)
     (String dht-timeout)
     (Bool stream))
 
