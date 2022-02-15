@@ -733,13 +733,6 @@
     (String ipns-base))
 
   (export-rpc-call
-    (reader/plain)
-    ((key rotate))
-    (String oldkey)
-    (String type)
-    (Int size))
-
-  (export-rpc-call
     ()
     ((log level)
      (String subsystem yes)
@@ -1149,84 +1142,4 @@
   (export-rpc-call
     ()
     ((version deps)))
-
-  ;; The docs seem to suggest that some CLI commands don't have a corresponding
-  ;;   HTTP endpoint. These endpoints give HTTP 404:
-
-  ;(export-rpc-call
-  ;  (reader/plain)
-  ;  ((commands completion bash)))
-
-  ;(export-rpc-call
-  ;  (reader/plain)
-  ;  ((config edit)))
-
-  ;;;
-  ;;; Deprecated endpoints
-  ;;;
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((file ls)
-  ;   (String path yes)))
-
-  ;(export-rpc-call
-  ;  (reader/plain)
-  ;  ((object data)
-  ;   (String key yes)))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object get)
-  ;   (String key yes))
-  ;  (String data-encoding))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object links)
-  ;   (String key yes))
-  ;  (Bool headers))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object new)
-  ;   (String template no)))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object patch add-link)
-  ;   (String hash yes)
-  ;   (String name yes)
-  ;   (String object yes))
-  ;  (Bool create))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object patch append-data)
-  ;   (String hash yes)))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object patch rm-link)
-  ;   (String hash yes)
-  ;   (String name yes)))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object patch set-data)
-  ;   (String hash yes)))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object put))
-  ;  (String inputenc)
-  ;  (String datafieldenc)
-  ;  (Bool pin)
-  ;  (Bool quiet))
-
-  ;(export-rpc-call
-  ;  ()
-  ;  ((object stat)
-  ;   (String key yes))
-  ;  (Bool human))
   )
