@@ -96,6 +96,16 @@ ipfs pin ls bafkreicd47ynzf6it5ssdwryvhksy6ylm4s42jlwzjbxhv5zlkw6mwbooq
 (pin/ls #:path "bafkreicd47ynzf6it5ssdwryvhksy6ylm4s42jlwzjbxhv5zlkw6mwbooq")
 ```
 
+## Missing endpoints
+
+You may find that some endpoints aren't implemented. There are two
+possibilities: the endpoint is new and it hasn't been implemented yet; or, the
+endpoint has been deprecated or calling it gives HTTP 404. For the former,
+issues/PRs are very welcome! For the latter, if they're gone, they're gone. If
+you really need them, you can search the Git log. E.g. `git log -1 -p -S'(key
+rotate)' -- ipfs.v0.scm` will probably show you [3a32380].
+
+[3a32380]: https://github.com/siiky/ipfs.scm/commit/3a3238049c6b484a1a8dc926e441cd454ddc7d0c
 [CHICKEN Scheme]: https://call-cc.org
 [HTTP API]: https://docs.ipfs.io/reference/http/api
 [IPFS API Implementation Doc]: https://github.com/ipfs/go-ipfs/blob/a494f48a9dd0a66bd682651b89e7503b5500ac2a/docs/implement-api-bindings.md
