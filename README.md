@@ -2,6 +2,8 @@
 
 **[CHICKEN Scheme] library for the [IPFS] [HTTP API].**
 
+## Overview
+
 The official docs define some clear terminology at the top of the page that
 will be useful to know, even though sometimes they aren't themselves consistent
 throughout that page (IMO):

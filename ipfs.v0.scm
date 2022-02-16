@@ -1108,7 +1108,7 @@
     (Bool verbose)
     (Bool streams)
     (Bool latency)
-    (Bool directio))
+    (Bool direction))
 
   (export-rpc-call
     ()

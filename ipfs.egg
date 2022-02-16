@@ -17,7 +17,7 @@
    srfi-197
    uri-common)
  (component-options
-   (csc-options "-O0" "-d3")
+   ;(csc-options "-O0" "-d3")
    ;(linkage static)
    )
  (components
