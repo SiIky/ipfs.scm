@@ -42,7 +42,11 @@ arguments: `#:reader` & `#:writer`. These correspond, respectively, to the
 e.g. performance maybe?). Unless noted otherwise (for some exceptions) all
 procedures have a sane default value according to their corresponding endpoint
 -- in general: `reader/json` for the reader and `#f` for the writer.
-`reader/json` is just a rename of [`read-json`] from [`medea`].
+`reader/json` is just a rename of [`read-json`] from [`medea`]. **NOTE:**
+`medea` by default deserializes object keys as symbols, which isn't great.
+There's the possibility to change the JSON reader to use strings instead, but
+for now be warned: you shouldn't use this library with an untrusted IPFS node,
+it may crash your program.
 
 The body of `add` (and others) must be given as the `#:writer` keyword
 argument, using for example the already defined writers `writer/file` &
