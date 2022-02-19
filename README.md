@@ -49,8 +49,8 @@ for now be warned: you shouldn't use this library with an untrusted IPFS node,
 it may crash your program.
 
 The body of `add` (and others) must be given as the `#:writer` keyword
-argument, using for example the already defined writers `writer/file` &
-`writer/filesystem`.
+argument, using for example the already defined writers `writer/file`,
+`writer/directory`, or `writer/filesystem`.
 
 ## Examples & Low-level differences
 
