@@ -68,7 +68,7 @@ Just used netcat for this, as is suggested by [IPFS API Implementation Doc]:
 nc -q 1 -l 5006
 
 # And in another terminal
-ipfs --api /ip4/127.0.0.1/tcp/5002 # ...
+ipfs --api /ip4/127.0.0.1/tcp/5006 # ...
 ```
 
 And for this library:
