@@ -57,6 +57,7 @@
           absolute-pathname?
           decompose-directory
           make-absolute-pathname
+          make-pathname
           normalize-pathname)
     (only chicken.process-context current-directory)
     (only chicken.string ->string))
@@ -69,8 +70,9 @@
     ; TODO: Change the reader to use strings instead?
     (rename (only medea read-json)
             (read-json json:read))
-    (rename (only uri-common make-uri)
-            (make-uri uri:make))
+    (rename (only uri-common make-uri uri-encode-string)
+            (make-uri uri:make)
+            (uri-encode-string uri:encode-string))
     (rename (only intarweb make-request)
             (make-request request:make))
     (only http-client with-input-from-request)
@@ -128,13 +130,13 @@
 
   (define (internal-writer path #!optional name (headers '()))
     `(file #:file ,path
-           ,@(if name `(#:filename ,name) '())
+           ,@(if name `(#:filename ,(uri:encode-string name)) '())
            ,@(if (or (not headers) (null? headers))
                  '()
                  `(#:headers ,headers))))
 
   (define (writer/file* path #!key name (headers '()))
-    (internal-writer path name headers))
+    (internal-writer path (or name (path->name path)) headers))
 
   ;; @brief Compute the appropriate body for a single file.
   ;; @param path The file's path -- read by the client, not the IPFS node.
@@ -145,14 +147,15 @@
   ;;
   ;; If @a name is not given, `http-client` uses the basename of @a path.
   (define (writer/file path #!key name (headers '()))
-    (list (writer/file* path #:name (or name (path->name path)) #:headers headers)))
+    (list (writer/file* path #:name name #:headers headers)))
 
   (define (path-components path)
     (receive (_ _ components) (decompose-directory path)
       components))
 
-  (define (absolute-path-relative-to-directory base-dir-components)
-    (-> (normalize-pathname _)
+  (define (absolute-path-relative-to-directory base-dir-components path)
+    (=> path
+        (normalize-pathname _)
         (path-components _)
         (make-absolute-pathname _ "")
         (make-absolute-pathname base-dir-components _)
@@ -167,6 +170,12 @@
              (string-length s1)
              strs)))
 
+  (define (insert-sorted <? elem lst)
+    (cond
+      ((null? lst) `(,elem))
+      ((<? elem (car lst)) (cons elem lst))
+      (else (cons (car lst) (insert-sorted <? elem (cdr lst))))))
+
   ;; @brief Compute a suitable name for a file or directory given its path.
   ;;
   ;; Only useful for single files or directories, not lists of them, because it
@@ -175,14 +184,15 @@
   (define (path->name path #!optional (cwd (current-directory)))
     (let* ((cwd (path-components cwd)))
       (=> path
-          ((absolute-path-relative-to-directory cwd) _)
+          (absolute-path-relative-to-directory cwd _)
           (path-components _)
           (last _))))
 
   (define (writer/directory* path #!key name (headers '()))
-    (let ((empty-port (open-input-string ""))
-          (headers (alist-update 'content-type '(application/x-directory) headers)))
-      (internal-writer empty-port (or name path) headers)))
+    (let ((name (or name (path->name path)))
+          (headers (alist-update 'content-type '(application/x-directory) headers))
+          (empty-port (open-input-string "")))
+      (internal-writer empty-port name headers)))
 
   ;; @brief Compute the appropriate body for a single directory.
   ;; @param path The directory's path -- read by the client, not the IPFS node.
@@ -199,7 +209,7 @@
   ;;
   ;; TODO: Still not 100% satisfied with the behaviour...
   (define (writer/directory path #!key name (headers '()))
-    (list (writer/directory* path #:name (or name (path->name path)) #:headers headers)))
+    (list (writer/directory* path #:name name #:headers headers)))
 
   ;; @brief Compute the appropriate body for the files of a filesystem tree.
   ;; @returns An alist that can be used by `with-input-from-request` as the
@@ -225,7 +235,8 @@
     (define (abs-path-rel-to-cwd path)
       (if (absolute-pathname? path)
           path
-          ((absolute-path-relative-to-directory cwd-components) path)))
+          (absolute-path-relative-to-directory cwd-components path)))
+    (define abs-path (abs-path-rel-to-cwd path))
 
     (define (predicate-mapper path)
       (cond
@@ -234,10 +245,15 @@
         (else #f)))
 
     (define (shorten-by-longest-prefix paths)
-      (let ((prefix-length (longest-common-prefix paths)))
-        (map (lambda (path)
-               (cons (string-drop path prefix-length) path))
-             paths)))
+      (let ((prefix-length (longest-common-prefix paths))
+            (root (last (path-components abs-path))))
+        (cons (cons root abs-path)
+              (map (lambda (path)
+                     (=> path
+                         (string-drop _ prefix-length)
+                         (make-pathname root _)
+                         (cons _ path)))
+                   paths))))
 
     (define (writer shortened-path/full-path)
       (let ((shortened-path (car shortened-path/full-path))
@@ -249,19 +265,14 @@
            (writer/file* full-path #:name shortened-path))
           (else #f))))
 
-    ; TODO: Is it worth converting the resulting list of `find-files` to a
-    ;       stream to filter and map, and then convert back to a list? Should
-    ;       shorten the time between beginning to end of each file, thus
-    ;       lessening the probability of a TOCTOU error. It should make a
-    ;       significant difference for very large file trees.
-    (=> path
-        (abs-path-rel-to-cwd _)
-        (find-files
-          _
+    (=> (find-files
+          abs-path
           #:test (or test (constantly #t))
           #:limit limit
           #:dotfiles dotfiles
-          #:follow-symlinks follow-symlinks)
+          #:follow-symlinks follow-symlinks
+          #:seed '()
+          #:action (cute insert-sorted string<? <> <>))
         (filter-map predicate-mapper _)
         (shorten-by-longest-prefix _)
         (filter-map writer _)))
