@@ -128,6 +128,7 @@
   (define reader/json json:read)
   (define reader/plain read-string)
 
+  ; TODO: Add the Abspath header
   (define (internal-writer path #!optional name (headers '()))
     `(file #:file ,path
            ,@(if name `(#:filename ,(uri:encode-string name)) '())
@@ -238,32 +239,25 @@
           (absolute-path-relative-to-directory cwd-components path)))
     (define abs-path (abs-path-rel-to-cwd path))
 
-    (define (predicate-mapper path)
-      (cond
-        ((directory-exists? path) path)
-        ((file-exists? path) (string-trim-right path #\/))
-        (else #f)))
-
     (define (shorten-by-longest-prefix paths)
       (let ((prefix-length (longest-common-prefix paths))
             (root (last (path-components abs-path))))
-        (cons (cons root abs-path)
-              (map (lambda (path)
-                     (=> path
-                         (string-drop _ prefix-length)
-                         (make-pathname root _)
-                         (cons _ path)))
-                   paths))))
+        (map (lambda (path)
+               (=> path
+                   (string-drop _ prefix-length)
+                   (make-pathname root _)
+                   (string-trim-right _ #\/)
+                   (cons _ path)))
+             paths)))
 
     (define (writer shortened-path/full-path)
       (let ((shortened-path (car shortened-path/full-path))
             (full-path (cdr shortened-path/full-path)))
-        (cond
-          ((directory-exists? full-path)
-           (writer/directory* full-path #:name shortened-path))
-          ((file-exists? full-path)
-           (writer/file* full-path #:name shortened-path))
-          (else #f))))
+        ((cond
+           ((directory-exists? full-path) writer/directory*)
+           ((file-exists? full-path) writer/file*)
+           (else (constantly #f)))
+         full-path #:name shortened-path)))
 
     (=> (find-files
           abs-path
@@ -273,7 +267,9 @@
           #:follow-symlinks follow-symlinks
           #:seed '()
           #:action (cute insert-sorted string<? <> <>))
-        (filter-map predicate-mapper _)
+        (cons abs-path _)
+        ; file-exists? returns #t for directories too
+        (filter file-exists? _)
         (shorten-by-longest-prefix _)
         (filter-map writer _)))
 
