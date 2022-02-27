@@ -300,8 +300,8 @@
         (filter-map writer _)))
 
   ;; @see `uri-common`'s `make-uri`
-  (define (make-uri #!key (scheme (*scheme*)) (host (*host*)) (port (*port*)) path query)
-    (uri:make #:scheme scheme #:host host #:port port #:path path #:query query))
+  (define (make-uri path query)
+    (uri:make #:scheme (*scheme*) #:host (*host*) #:port (*port*) #:path path #:query query))
 
   ;; @see `intarweb`'s `make-request`
   (define (make-request uri)
@@ -309,13 +309,13 @@
 
   ;; @brief Wrapper around `http-client`'s `with-input-from-request`.
   ;; @see `http-client`'s `with-input-from-request`.
-  (define (call-request request #!key reader writer)
+  (define (call-request request reader writer)
     (with-input-from-request request writer reader))
 
   ;; @brief Thin wrapper around `call-request`.
   ;; @see `call-request`
-  (define (call-uri uri #!key reader writer)
-    (call-request (make-request uri) #:reader reader #:writer writer))
+  (define (call-uri uri reader writer)
+    (call-request (make-request uri) reader writer))
 
 
   ;; @brief Process the arguments and flags given to the procedure and create
@@ -386,10 +386,10 @@
     (type-wrapper (*->array type)))
 
 
-  (define (rpc-call path arguments #!key reader writer)
+  (define (rpc-call path arguments reader writer)
     (=> (make-query arguments)
-        (make-uri #:path path #:query _)
-        (call-uri _ #:reader reader #:writer writer)))
+        (make-uri path _)
+        (call-uri _ reader writer)))
 
   (define (yes argname value)
     (assert (not (nothing? value))
@@ -461,8 +461,7 @@
                        ...
                        (flag . ,(ftype 'flag flag))
                        ...)
-                     #:reader reader
-                     #:writer writer))))))
+                     reader writer))))))
 
   ;; @brief Defines and exports an RPC procedure created with make-rpc-lambda.
   ;;
