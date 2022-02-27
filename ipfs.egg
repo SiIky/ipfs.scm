@@ -4,13 +4,11 @@
  (synopsis "IPFS HTTP API for Scheme")
  (version "0.0.0")
  (dependencies
-   bindings
    http-client
    intarweb
    matchable
    medea
    openssl
-   procedural-macros
    srfi-1
    srfi-13
    srfi-189

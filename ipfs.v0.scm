@@ -61,7 +61,7 @@
           make-pathname
           normalize-pathname)
     (only chicken.process-context current-directory)
-    (only chicken.string ->string))
+    (only chicken.string ->string string-split))
 
   (import
     ; NOTE: I'm not too comfortable with medea deserializing objects into
@@ -123,8 +123,9 @@
   ;;   "/api/v0/commands/completion/bash"
   ;; @returns A list suitable to be given to uri-common.make-uri as the #:path
   ;;   parameter. Example: '(/ "api" "v0" "commands" "completion" "bash")
+  ; TODO: Add type
   (define (http-api-path endpoint-path)
-    `(/ ,%api-base% ,%version% ,@(map symbol->string endpoint-path)))
+    `(/ ,%api-base% ,%version% ,@(map ->string endpoint-path)))
 
   ;; @brief Read a reply as string
   ;; @returns A string with the reply's content
@@ -437,22 +438,19 @@
   ;; @see export-rpc-call
   (define-syntax make-rpc-lambda
     (syntax-rules ()
-      ((make-rpc-lambda _ () _ _)
-       (syntax-error "The endpoint path must not be empty"))
+      ((make-rpc-lambda ()            name arguments flags)
+       (make-rpc-lambda (reader/json) name arguments flags))
 
-      ((make-rpc-lambda ()            path arguments flags)
-       (make-rpc-lambda (reader/json) path arguments flags))
-
-      ((make-rpc-lambda (default-reader)    path arguments flags)
-       (make-rpc-lambda (default-reader #f) path arguments flags))
+      ((make-rpc-lambda (default-reader)    name arguments flags)
+       (make-rpc-lambda (default-reader #f) name arguments flags))
 
       ((make-rpc-lambda
          (default-reader default-writer)
-         (component ...)
+         name
          ((atype argument required?) ...)
          ((ftype flag) ...))
 
-       (let ((path (http-api-path '(component ...))))
+       (let ((path (http-api-path (string-split (symbol->string name) "/" #f))))
          (lambda (#!key
                   (reader default-reader)
                   (writer default-writer)
@@ -466,14 +464,6 @@
                      #:reader reader
                      #:writer writer))))))
 
-  (import procedural-macros)
-  (import-for-syntax
-    bindings
-    (only chicken.syntax strip-syntax)
-    (only srfi-13 string-join)
-    (rename (only srfi-197 chain)
-            (chain =>)))
-
   ;; @brief Defines and exports an RPC procedure created with make-rpc-lambda.
   ;;
   ;; Used in the form
@@ -486,18 +476,12 @@
   ;;     (ftype flag) ...)
   ;;
   ;; @see make-rpc-lambda
-  (define-macro
-    (export-rpc-call reader/writer (path . arguments) . flags)
-    (with-implicit-renaming
-      (=? %name)
-      (let ((%name
-              (=> path
-                  (map (o symbol->string strip-syntax) _)
-                  (string-join _ "/")
-                  (string->symbol _))))
-        `(begin
-           (export ,%name)
-           (define ,%name (make-rpc-lambda ,reader/writer ,path ,arguments ,flags))))))
+  (define-syntax export-rpc-call
+   (syntax-rules ()
+    ((export-rpc-call reader/writer (name arguments ...) flags ...)
+     (begin
+      (export name)
+      (define name (make-rpc-lambda reader/writer 'name (arguments ...) (flags ...)))))))
 
   ;;;
   ;;; Enpoint procedures
@@ -512,7 +496,7 @@
   ;;   "top-level" directory.
   (export-rpc-call
     (reader/json+)
-    ((add))
+    (add)
     (Bool silent)
     (Bool progress)
     (Bool trickle)
@@ -530,32 +514,32 @@
 
   (export-rpc-call
     ()
-    ((bitswap ledger)
+    (bitswap/ledger
      (String peer yes)))
 
   (export-rpc-call
     (reader/plain)
-    ((bitswap reprovide)))
+    (bitswap/reprovide))
 
   (export-rpc-call
     ()
-    ((bitswap stat))
+    (bitswap/stat)
     (Bool verbose)
     (Bool human))
 
   (export-rpc-call
     ()
-    ((bitswap wantlist))
+    (bitswap/wantlist)
     (String peer))
 
   (export-rpc-call
     (reader/plain)
-    ((block get)
+    (block/get
      (String hash yes)))
 
   (export-rpc-call
     ()
-    ((block put))
+    (block/put)
     (String format)
     (String mhtype)
     (Int mhlen)
@@ -563,68 +547,68 @@
 
   (export-rpc-call
     ()
-    ((block rm)
+    (block/rm
      (String hash yes))
     (Bool force)
     (Bool quiet))
 
   (export-rpc-call
     ()
-    ((block stat)
+    (block/stat
      (String hash yes)))
 
   (export-rpc-call
     ()
-    ((bootstrap)))
+    (bootstrap))
 
   (export-rpc-call
     ()
-    ((bootstrap add)
+    (bootstrap/add
      (String peer no)))
 
   (export-rpc-call
     ()
-    ((bootstrap add default)))
+    (bootstrap/add/default))
 
   (export-rpc-call
     ()
-    ((bootstrap list)))
+    (bootstrap/list))
 
   (export-rpc-call
     ()
-    ((bootstrap rm)
+    (bootstrap/rm
      (String peer no)))
 
   (export-rpc-call
     ()
-    ((bootstrap rm all)))
+    (bootstrap/rm/all))
 
   (export-rpc-call
     (reader/plain)
-    ((cat)
+    (cat
      (String path yes))
     (Int offset)
     (Int length))
 
   (export-rpc-call
     ()
-    ((cid base32)
+    (cid/base32
      (String cid yes)))
 
   (export-rpc-call
     ()
-    ((cid bases))
+    (cid/bases)
     (Bool prefix)
     (Bool numeric))
 
   (export-rpc-call
     ()
-    ((cid codecs))
+    (cid/codecs)
     (Bool numeric))
 
   (export-rpc-call
     ()
-    ((cid format)
+    (cid/format
      (String cid yes))
     (String f)
     (String v)
@@ -633,17 +617,17 @@
 
   (export-rpc-call
     ()
-    ((cid hashes))
+    (cid/hashes)
     (Bool numeric))
 
   (export-rpc-call
     ()
-    ((commands))
+    (commands)
     (Bool flags))
 
   (export-rpc-call
     ()
-    ((config)
+    (config
      (String key yes)
      (String value no))
     (Bool bool)
@@ -651,40 +635,40 @@
 
   (export-rpc-call
     ()
-    ((config profile apply)
+    (config/profile/apply
      (String profile yes))
     (Bool dry-run))
 
   (export-rpc-call
     (reader/plain)
-    ((config replace)))
+    (config/replace))
 
   (export-rpc-call
     ()
-    ((config show)))
+    (config/show))
 
   (export-rpc-call
     (reader/plain)
-    ((dag export)
+    (dag/export
      (String cid yes))
     (Bool progress))
 
   (export-rpc-call
     (reader/plain)
-    ((dag get)
+    (dag/get
      (String object yes))
     (String output-codec))
 
   (export-rpc-call
     ()
-    ((dag import))
+    (dag/import)
     (Bool pin-roots)
     (Bool silent)
     (Bool stats))
 
   (export-rpc-call
     ()
-    ((dag put))
+    (dag/put)
     (String store-codec)
     (String input-codec)
     (Bool pin)
@@ -692,112 +676,112 @@
 
   (export-rpc-call
     ()
-    ((dag resolve)
+    (dag/resolve
      (String path yes)))
 
   (export-rpc-call
     ()
-    ((dag stat)
+    (dag/stat
      (String cid yes))
     (Bool progress))
 
   (export-rpc-call
     ()
-    ((dht findpeer)
+    (dht/findpeer
      (String peer yes))
     (Bool verbose))
 
   (export-rpc-call
     ()
-    ((dht findprovs)
+    (dht/findprovs
      (String key yes))
     (Bool verbose)
     (Int num-providers))
 
   (export-rpc-call
     ()
-    ((dht get)
+    (dht/get
      (String key yes))
     (Bool verbose))
 
   (export-rpc-call
     ()
-    ((dht provide)
+    (dht/provide
      (String key yes))
     (Bool verbose)
     (Bool recursive))
 
   (export-rpc-call
     ()
-    ((dht put)
+    (dht/put
      (String key yes))
     (Bool verbose))
 
   (export-rpc-call
     ()
-    ((dht query)
+    (dht/query
      (String peer yes))
     (Bool verbose))
 
   (export-rpc-call
     ()
-    ((diag cmds))
+    (diag/cmds)
     (Bool verbose))
 
   (export-rpc-call
     (reader/plain)
-    ((diag cmds clear)))
+    (diag/cmds/clear))
 
   (export-rpc-call
     (reader/plain)
-    ((diag cmds set-time)
-     (String time yes)))
+    (diag/cmds/set-time
+      (String time yes)))
 
   (export-rpc-call
     (reader/plain)
-    ((diag profile))
+    (diag/profile)
     (String output)
     (String cpu-profile-time))
 
   (export-rpc-call
     (reader/plain)
-    ((diag sys)))
+    (diag/sys))
 
   (export-rpc-call
     ()
-    ((dns)
+    (dns
      (String domain yes))
     (Bool recursive))
 
   (export-rpc-call
     (reader/plain)
-    ((files chcid)
+    (files/chcid
      (String path no))
     (Int cid-version)
     (String hash))
 
   (export-rpc-call
     (reader/plain)
-    ((files cp)
+    (files/cp
      (String from yes)
      (String to yes))
     (Bool parents))
 
   (export-rpc-call
     ()
-    ((files flush)
+    (files/flush
      (String path no)))
 
   (export-rpc-call
     ()
-    ((files ls)
+    (files/ls
      (String path no))
     (Bool long)
     (Bool U))
 
   (export-rpc-call
     (reader/plain)
-    ((files mkdir)
+    (files/mkdir
      (String path yes))
     (Bool parents)
     (Int cid-version)
@@ -805,27 +789,27 @@
 
   (export-rpc-call
     (reader/plain)
-    ((files mv)
+    (files/mv
      (String from yes)
      (String to yes)))
 
   (export-rpc-call
     (reader/plain)
-    ((files read)
+    (files/read
      (String path yes))
     (Int offset)
     (Int count))
 
   (export-rpc-call
     (reader/plain)
-    ((files rm)
+    (files/rm
      (String path yes))
     (Bool recursive)
     (Bool force))
 
   (export-rpc-call
     ()
-    ((files stat)
+    (files/stat
      (String path yes))
     (String format)
     (Bool hash)
@@ -834,7 +818,7 @@
 
   (export-rpc-call
     (reader/plain)
-    ((files write)
+    (files/write
      (String path yes))
     (Int offset)
     (Bool create)
@@ -847,23 +831,23 @@
 
   (export-rpc-call
     ()
-    ((filestore dups)))
+    (filestore/dups))
 
   (export-rpc-call
     ()
-    ((filestore ls)
+    (filestore/ls
      (String cid no))
     (Bool file-order))
 
   (export-rpc-call
     ()
-    ((filestore verify)
+    (filestore/verify
      (String cid no))
     (Bool file-order))
 
   (export-rpc-call
     (reader/plain)
-    ((get)
+    (get
      (String path yes))
     (String output)
     (Bool archive)
@@ -872,20 +856,20 @@
 
   (export-rpc-call
     ()
-    ((id)
+    (id
      (String peer no))
     (String format)
     (String peerid-base))
 
   (export-rpc-call
     (reader/plain)
-    ((key export)
+    (key/export
      (String key yes))
     (String output))
 
   (export-rpc-call
     ()
-    ((key gen)
+    (key/gen
      (String name yes))
     (String type)
     (Int size)
@@ -893,19 +877,19 @@
 
   (export-rpc-call
     ()
-    ((key import)
+    (key/import
      (String name yes))
     (String ipns-base))
 
   (export-rpc-call
     ()
-    ((key list))
+    (key/list)
     (Bool l)
     (String ipns-base))
 
   (export-rpc-call
     ()
-    ((key rename)
+    (key/rename
      (String old-name yes)
      (String new-name yes))
     (Bool force)
@@ -913,28 +897,28 @@
 
   (export-rpc-call
     ()
-    ((key rm)
+    (key/rm
      (String name yes))
     (Bool l)
     (String ipns-base))
 
   (export-rpc-call
     ()
-    ((log level)
+    (log/level
      (String subsystem yes)
      (String level yes)))
 
   (export-rpc-call
     ()
-    ((log ls)))
+    (log/ls))
 
   (export-rpc-call
     (reader/plain)
-    ((log tail)))
+    (log/tail))
 
   (export-rpc-call
     ()
-    ((ls)
+    (ls
      (String path yes))
     (Bool headers)
     (Bool resolve-type)
@@ -943,33 +927,33 @@
 
   (export-rpc-call
     ()
-    ((mount))
+    (mount)
     (String ipfs-path)
     (String ipns-path))
 
   (export-rpc-call
     (reader/plain)
-    ((multibase decode)))
+    (multibase/decode))
 
   (export-rpc-call
     (reader/plain)
-    ((multibase encode))
+    (multibase/encode)
     (String b))
 
   (export-rpc-call
     ()
-    ((multibase list))
+    (multibase/list)
     (Bool prefix)
     (Bool numeric))
 
   (export-rpc-call
     (reader/plain)
-    ((multibase transcode))
+    (multibase/transcode)
     (String b))
 
   (export-rpc-call
     ()
-    ((name publish)
+    (name/publish
      (String path yes))
     (Bool resolve)
     (String lifetime)
@@ -981,21 +965,21 @@
 
   (export-rpc-call
     ()
-    ((name pubsub cancel)
+    (name/pubsub/cancel
      (String path yes)))
 
   (export-rpc-call
     ()
-    ((name pubsub state)))
+    (name/pubsub/state))
 
   (export-rpc-call
     ()
-    ((name pubsub subs))
+    (name/pubsub/subs)
     (String ipns-base))
 
   (export-rpc-call
     ()
-    ((name resolve)
+    (name/resolve
      (String name no))
     (Bool recursive)
     (Bool nocache)
@@ -1006,7 +990,7 @@
   ; TODO: Maybe change `obj1` & `obj2` to better names.
   (export-rpc-call
     ()
-    ((object diff)
+    (object/diff
      (String obj1 yes)
      (String obj2 yes))
     (Bool verbose))
@@ -1015,7 +999,7 @@
   ;       actual example.
   (export-rpc-call
     ()
-    ((p2p close))
+    (p2p/close)
     (Bool all)
     (String protocol)
     (String listen-address)
@@ -1023,7 +1007,7 @@
 
   (export-rpc-call
     (reader/plain)
-    ((p2p forward)
+    (p2p/forward
      (String protocol yes)
      (String listen-endpoint yes)
      (String target-endpoint yes))
@@ -1031,7 +1015,7 @@
 
   (export-rpc-call
     (reader/plain)
-    ((p2p listen)
+    (p2p/listen
      (String protocol yes)
      (String target-endpoint yes))
     (Bool allow-custom-protocol)
@@ -1039,30 +1023,30 @@
 
   (export-rpc-call
     ()
-    ((p2p ls))
+    (p2p/ls)
     (Bool headers))
 
   (export-rpc-call
     (reader/plain)
-    ((p2p stream close)
+    (p2p/stream/close
      (String stream no))
     (Bool all))
 
   (export-rpc-call
     ()
-    ((p2p stream ls))
+    (p2p/stream/ls)
     (Bool headers))
 
   (export-rpc-call
     ()
-    ((pin add)
+    (pin/add
      (String path yes))
     (Bool recursive)
     (Bool progress))
 
   (export-rpc-call
     ()
-    ((pin ls)
+    (pin/ls
      (String path no))
     (String type)
     (Bool quiet)
@@ -1070,26 +1054,26 @@
 
   (export-rpc-call
     ()
-    ((pin rm)
+    (pin/rm
      (String path yes))
     (Bool recursive))
 
   (export-rpc-call
     ()
-    ((pin update)
+    (pin/update
      (String old-path yes)
      (String new-path yes))
     (Bool unpin))
 
   (export-rpc-call
     ()
-    ((pin verify))
+    (pin/verify)
     (Bool verbose)
     (Bool quiet))
 
   (export-rpc-call
     ()
-    ((pin remote add)
+    (pin/remote/add
      (String path yes))
     (String service)
     (String name)
@@ -1097,7 +1081,7 @@
 
   (export-rpc-call
     ()
-    ((pin remote ls))
+    (pin/remote/ls)
     (String service)
     (String name)
     ((Array String) cid)
@@ -1105,7 +1089,7 @@
 
   (export-rpc-call
     (reader/plain)
-    ((pin remote rm))
+    (pin/remote/rm)
     (String service)
     (String name)
     ((Array String) cid)
@@ -1114,49 +1098,49 @@
 
   (export-rpc-call
     (reader/plain)
-    ((pin remote service add)
+    (pin/remote/service/add
      (String name yes)
      (String endpoint yes)
      (String key yes)))
 
   (export-rpc-call
     ()
-    ((pin remote service ls))
+    (pin/remote/service/ls)
     (Bool stat))
 
   (export-rpc-call
     (reader/plain)
-    ((pin remote service rm)
+    (pin/remote/service/rm
      (String name yes)))
 
   (export-rpc-call
     ()
-    ((ping)
+    (ping
      (String peer yes))
     (Int count))
 
   (export-rpc-call
     ()
-    ((pubsub ls)))
+    (pubsub/ls))
 
   (export-rpc-call
     ()
-    ((pubsub peers)
+    (pubsub/peers
      (String topic no)))
 
   (export-rpc-call
     (reader/plain)
-    ((pubsub pub)
+    (pubsub/pub
      (String topic yes)))
 
   (export-rpc-call
     ()
-    ((pubsub sub)
+    (pubsub/sub
      (String topic yes)))
 
   (export-rpc-call
     ()
-    ((refs)
+    (refs
      (String path yes))
     (String format)
     (Bool edges)
@@ -1166,36 +1150,36 @@
 
   (export-rpc-call
     ()
-    ((refs local)))
+    (refs/local))
 
   (export-rpc-call
     ()
-    ((repo fsck)))
+    (repo/fsck))
 
   (export-rpc-call
     ()
-    ((repo gc))
+    (repo/gc)
     (Bool stream-errors)
     (Bool quiet))
 
   (export-rpc-call
     ()
-    ((repo stat))
+    (repo/stat)
     (Bool size-only)
     (Bool human))
 
   (export-rpc-call
     ()
-    ((repo verify)))
+    (repo/verify))
 
   (export-rpc-call
     ()
-    ((repo version))
+    (repo/version)
     (Bool quiet))
 
   (export-rpc-call
     ()
-    ((resolve)
+    (resolve
      (String name no))
     (Bool recursive)
     (Bool nocache)
@@ -1205,18 +1189,18 @@
 
   (export-rpc-call
     (reader/plain)
-    ((shutdown)))
+    (shutdown))
 
   (export-rpc-call
     ()
-    ((stats bitswap))
+    (stats/bitswap)
     (Bool verbose)
     (Bool human))
 
   ; Polling hangs? Kinda makes sense but...
   (export-rpc-call
     ()
-    ((stats bw))
+    (stats/bw)
     (String peer)
     (String proto)
     (Bool poll)
@@ -1224,73 +1208,73 @@
 
   (export-rpc-call
     ()
-    ((stats dht)
+    (stats/dht
      (String dht no)))
 
   (export-rpc-call
     ()
-    ((stats provide)))
+    (stats/provide))
 
   (export-rpc-call
     ()
-    ((stats repo))
+    (stats/repo)
     (Bool size-only)
     (Bool human))
 
   (export-rpc-call
     ()
-    ((swarm addrs)))
+    (swarm/addrs))
 
   (export-rpc-call
     ()
-    ((swarm addrs listen)))
+    (swarm/addrs/listen))
 
   (export-rpc-call
     ()
-    ((swarm addrs local))
+    (swarm/addrs/local)
     (Bool id))
 
   (export-rpc-call
     ()
-    ((swarm connect)
+    (swarm/connect
      (String peer yes)))
 
   (export-rpc-call
     ()
-    ((swarm disconnect)
+    (swarm/disconnect
      (String peer yes)))
 
   (export-rpc-call
     ()
-    ((swarm filters)))
+    (swarm/filters))
 
   (export-rpc-call
     ()
-    ((swarm filters add)
+    (swarm/filters/add
      (String filter yes)))
 
   (export-rpc-call
     ()
-    ((swarm filters rm)
+    (swarm/filters/rm
      (String filter yes)))
 
   (export-rpc-call
     ()
-    ((swarm peering add)
+    (swarm/peering/add
      (String peer yes)))
 
   (export-rpc-call
     ()
-    ((swarm peering ls)))
+    (swarm/peering/ls))
 
   (export-rpc-call
     ()
-    ((swarm peering rm)
+    (swarm/peering/rm
      (String peer yes)))
 
   (export-rpc-call
     ()
-    ((swarm peers))
+    (swarm/peers)
     (Bool verbose)
     (Bool streams)
     (Bool latency)
@@ -1298,28 +1282,28 @@
 
   (export-rpc-call
     ()
-    ((tar add)))
+    (tar/add))
 
   (export-rpc-call
     (reader/plain)
-    ((tar cat)
+    (tar/cat
      (String path yes)))
 
   (export-rpc-call
     (reader/plain)
-    ((update)
+    (update
      (String arguments no)))
 
   (export-rpc-call
     ()
-    ((urlstore add)
+    (urlstore/add
      (String url yes))
     (Bool trickle)
     (Bool pin))
 
   (export-rpc-call
     ()
-    ((version))
+    (version)
     (Bool number)
     (Bool commit)
     (Bool repo)
@@ -1327,5 +1311,5 @@
 
   (export-rpc-call
     ()
-    ((version deps)))
+    (version/deps))
   )
