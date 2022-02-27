@@ -130,11 +130,12 @@
 
   ; TODO: Add the Abspath header
   (define (internal-writer path #!optional name (headers '()))
-    `(file #:file ,path
-           ,@(if name `(#:filename ,(uri:encode-string name)) '())
-           ,@(if (or (not headers) (null? headers))
-                 '()
-                 `(#:headers ,headers))))
+    (let ((path (if path `(#:file ,path) '()))
+          (name (if name `(#:filename ,(uri:encode-string name)) '()))
+          (headers (if (and (list? headers) (not (null? headers)))
+                       `(#:headers ,headers)
+                       '())))
+      `(file ,@path ,@name ,@headers)))
 
   (define (writer/file* path #!key name (headers '()))
     (internal-writer path (or name (path->name path)) headers))
@@ -191,9 +192,8 @@
 
   (define (writer/directory* path #!key name (headers '()))
     (let ((name (or name (path->name path)))
-          (headers (alist-update 'content-type '(application/x-directory) headers))
-          (empty-port (open-input-string "")))
-      (internal-writer empty-port name headers)))
+          (headers (alist-update 'content-type '(application/x-directory) headers)))
+      (internal-writer #f name headers)))
 
   ;; @brief Compute the appropriate body for a single directory.
   ;; @param path The directory's path -- read by the client, not the IPFS node.
