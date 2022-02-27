@@ -1,11 +1,69 @@
-POST /api/v0/add?pin=false;cid-version=1 HTTP/1.1
-Content-Length: 335
-Content-Type: multipart/form-data; boundary="----------------Multipart-=_boundary199=_=707748=-=1644521912"
+POST /api/v0/add?only-hash=true;pin=false;cid-version=1 HTTP/1.1
+Content-Length: 1730
+Content-Type: multipart/form-data; boundary="----------------Multipart-=_boundary190=_=236811=-=1645925425"
 Host: localhost:5006
 User-Agent: http-client/1.2 (CHICKEN Scheme HTTP-client)
 
-------------------Multipart-=_boundary199=_=707748=-=1644521912
-Content-Disposition: form-data; name="ipfs.scm"; filename="ipfs.scm"
+------------------Multipart-=_boundary190=_=236811=-=1645925425
+Content-Disposition: form-data; name="file"; filename="example-directory"
+Content-Type: application/x-directory
+
+
+------------------Multipart-=_boundary190=_=236811=-=1645925425
+Content-Disposition: form-data; name="file"; filename="example-directory%2Fadd.scm"
+Content-Type: application/octet-stream
+
+(import chicken.file)
+(import ipfs)
+
+(*port* 5006)
+(print
+  (add #:writer
+       (writer/filesystem "example-directory/")
+       #:cid-version 1
+       #:pin #f
+       #:recursive #t
+       #:encoding "json"))
+
+------------------Multipart-=_boundary190=_=236811=-=1645925425
+Content-Disposition: form-data; name="file"; filename="example-directory%2Fipfs.egg"
+Content-Type: application/octet-stream
+
+; vim: ft=scheme
+((author "siiky")
+ (license "unlicense")
+ (synopsis "IPFS HTTP API for Scheme")
+ (version "0.0.0")
+ (dependencies
+   bindings
+   http-client
+   intarweb
+   matchable
+   medea
+   openssl
+   procedural-macros
+   srfi-1
+   srfi-13
+   srfi-189
+   srfi-197
+   uri-common)
+ (component-options
+   (csc-options "-O0" "-d3")
+   ;(linkage static)
+   )
+ (components
+   (extension ipfs
+              (component-dependencies ipfs.v0)
+              (modules ipfs)
+              (source ipfs.scm))
+
+   (extension ipfs.v0
+              (modules ipfs.v0)
+              (source ipfs.v0.scm))
+   ))
+
+------------------Multipart-=_boundary190=_=236811=-=1645925425
+Content-Disposition: form-data; name="file"; filename="example-directory%2Fipfs.scm"
 Content-Type: application/octet-stream
 
 (module ipfs *
@@ -13,4 +71,4 @@ Content-Type: application/octet-stream
   (import ipfs.v0)
   (reexport ipfs.v0))
 
-------------------Multipart-=_boundary199=_=707748=-=1644521912--
+------------------Multipart-=_boundary190=_=236811=-=1645925425--

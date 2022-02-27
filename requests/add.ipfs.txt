@@ -1,15 +1,85 @@
-POST /api/v0/add?chunker=size-262144&cid-version=1&encoding=json&hash=sha2-256&inline-limit=32&pin=false&progress=true&stream-channels=true HTTP/1.1
+POST /api/v0/add?chunker=size-262144&cid-version=1&encoding=json&hash=sha2-256&inline-limit=32&only-hash=true&pin=false&quieter=true&recursive=true&stream-channels=true HTTP/1.1
 Host: 127.0.0.1:5006
 User-Agent: go-ipfs-cmds/http
 Connection: close
 Transfer-Encoding: chunked
-Content-Type: multipart/form-data; boundary=71406d6fed0e080f0849841195da9de26034c72cdb17f4328b30649342fd
+Content-Type: multipart/form-data; boundary=23f49c91380453016c2a4321d4ce3c412e461e5b189e6a2b6dfab0e4c7fd
 Accept-Encoding: gzip
 
-dd
---71406d6fed0e080f0849841195da9de26034c72cdb17f4328b30649342fd
-Abspath: /absolute/path/to/ipfs.scm
-Content-Disposition: form-data; name="file"; filename="ipfs.scm"
+b4
+--23f49c91380453016c2a4321d4ce3c412e461e5b189e6a2b6dfab0e4c7fd
+Content-Disposition: form-data; name="file"; filename="example-directory"
+Content-Type: application/x-directory
+
+
+103
+
+--23f49c91380453016c2a4321d4ce3c412e461e5b189e6a2b6dfab0e4c7fd
+Abspath: /absolute/path/to/example-directory/add.scm
+Content-Disposition: form-data; name="file"; filename="example-directory%2Fadd.scm"
+Content-Type: application/octet-stream
+
+
+d2
+(import chicken.file)
+(import ipfs)
+
+(*port* 5006)
+(print
+  (add #:writer
+       (writer/filesystem "example-directory/")
+       #:cid-version 1
+       #:pin #f
+       #:recursive #t
+       #:encoding "json"))
+
+105
+
+--23f49c91380453016c2a4321d4ce3c412e461e5b189e6a2b6dfab0e4c7fd
+Abspath: /absolute/path/to/example-directory/ipfs.egg
+Content-Disposition: form-data; name="file"; filename="example-directory%2Fipfs.egg"
+Content-Type: application/octet-stream
+
+
+255
+; vim: ft=scheme
+((author "siiky")
+ (license "unlicense")
+ (synopsis "IPFS HTTP API for Scheme")
+ (version "0.0.0")
+ (dependencies
+   bindings
+   http-client
+   intarweb
+   matchable
+   medea
+   openssl
+   procedural-macros
+   srfi-1
+   srfi-13
+   srfi-189
+   srfi-197
+   uri-common)
+ (component-options
+   (csc-options "-O0" "-d3")
+   ;(linkage static)
+   )
+ (components
+   (extension ipfs
+              (component-dependencies ipfs.v0)
+              (modules ipfs)
+              (source ipfs.scm))
+
+   (extension ipfs.v0
+              (modules ipfs.v0)
+              (source ipfs.v0.scm))
+   ))
+
+105
+
+--23f49c91380453016c2a4321d4ce3c412e461e5b189e6a2b6dfab0e4c7fd
+Abspath: /absolute/path/to/example-directory/ipfs.scm
+Content-Disposition: form-data; name="file"; filename="example-directory%2Fipfs.scm"
 Content-Type: application/octet-stream
 
 
@@ -21,7 +91,7 @@ Content-Type: application/octet-stream
 
 44
 
---71406d6fed0e080f0849841195da9de26034c72cdb17f4328b30649342fd--
+--23f49c91380453016c2a4321d4ce3c412e461e5b189e6a2b6dfab0e4c7fd--
 
 0
 
