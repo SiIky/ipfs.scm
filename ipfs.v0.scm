@@ -12,6 +12,7 @@
    http-api-path
 
    reader/json
+   reader/json+
    reader/plain
    internal-writer
    writer/directory
@@ -125,8 +126,32 @@
   (define (http-api-path endpoint-path)
     `(/ ,%api-base% ,%version% ,@(map symbol->string endpoint-path)))
 
-  (define reader/json json:read)
+  ;; @brief Read a reply as string
+  ;; @returns A string with the reply's content
+  ;; @see read-string
   (define reader/plain read-string)
+
+  ;; @brief Read a JSON message
+  ;; @returns A Scheme object representation of the JSON message
+  ;;
+  ;; Sets the consume-trailing-whitespace parameter to #f so that it may be
+  ;;   used to read more than one JSON message from the same port.
+  ;;
+  ;; @see read-json from medea
+  (define (reader/json #!optional (port (current-input-port)))
+    ; NOTE: Apparently `#:consume-trailing-whitespace #f` is needed to be able
+    ;       to read several JSON messages from the same port?
+    (json:read port #:consume-trailing-whitespace #f))
+
+  ;; @brief Read one or more JSON messages
+  ;; @returns A list of Scheme object representations of the JSON messages
+  ;; @see reader/json
+  (define (reader/json+ #!optional (port (current-input-port)))
+    (let loop ((ret '()))
+      (let ((obj (reader/json port)))
+        (if obj
+            (loop (cons obj ret))
+            ret))))
 
   ; TODO: Add the Abspath header
   (define (internal-writer path #!optional name (headers '()))
@@ -478,11 +503,16 @@
   ;;; Enpoint procedures
   ;;;
 
+  ;; The `silent` flag seems to be the equivalent of the `ipfs` command's
+  ;;   `--silent`/`--quieter` flags -- the difference between these two is only
+  ;;   relevant to the CLI. The `silent` flag of the HTTP API, if given and
+  ;;   true, asks the server to give back only one CID. In that case, for
+  ;;   convenience, the reader may be `reader/json` instead of `reader/json+`.
+  ;; When adding some filesystem tree, this CID seems to correspond to the
+  ;;   "top-level" directory.
   (export-rpc-call
-    ()
+    (reader/json+)
     ((add))
-    (Bool quiet)
-    (Bool quieter)
     (Bool silent)
     (Bool progress)
     (Bool trickle)
