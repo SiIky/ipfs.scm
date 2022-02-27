@@ -23,6 +23,7 @@
 
    Bool
    Int
+   UInt
    String
    Array
 
