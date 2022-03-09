@@ -52,6 +52,39 @@ The body of `add` (and others) must be given as the `#:writer` keyword
 argument, using for example the already defined writers `writer/file`,
 `writer/directory`, or `writer/filesystem`.
 
+---
+
+Due to implementation details (both this library's and `http-client`'s),
+requests are chunked when sending directories, even if unnecessary. This
+library can try avoiding it if you know that you have a patched `http-client`,
+and pass a truthy `#:avoid-chunking?` value to `writer/directory` &
+`writer/filesystem`. By default the library doesn't try to avoid chunking.
+
+**NOTE:** the library can't possibly know if the installed `http-client` is
+patched or not; if you try to avoid chunking but `http-client` isn't patched
+the request will be incorrect.
+
+The `http-client` patch:
+
+```diff
+diff --git a/http-client.scm b/http-client.scm
+index 3b914ec..f7233c3 100644
+--- a/http-client.scm
++++ b/http-client.scm
+@@ -734,7 +734,7 @@
+                 (list "--" boundary "\r\n" hs "\r\n"
+                       (cond ((string? file) (cons 'file file))
+                             ((port? file) (cons 'port file))
+-                            ((eq? keys #t) "")
++                            ((or (eq? keys #t) (not file)) "")
+                             (else (->string keys)))
+                   ;; The next boundary must always start on a new line
+                   "\r\n"))))
+```
+
+In the future, should the patch be accepted upstream, the `#:avoid-chunking?`
+parameter will be removed.
+
 ## Examples & Low-level differences
 
 Mainly documenting for myself, to compare the library and the `ipfs` command,

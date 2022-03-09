@@ -217,10 +217,11 @@
           (path-components _)
           (last _))))
 
-  (define (writer/directory* path #!key name (headers '()))
+  (define (writer/directory* path #!key name (headers '()) avoid-chunking?)
     (let ((name (or name (path->name path)))
-          (headers (alist-update 'content-type '(application/x-directory) headers)))
-      (internal-writer #f name headers)))
+          (headers (alist-update 'content-type '(application/x-directory) headers))
+          (file (and (not avoid-chunking?) (open-input-string ""))))
+      (internal-writer file name headers)))
 
   ;; @brief Compute the appropriate body for a single directory.
   ;; @param path The directory's path -- read by the client, not the IPFS node.
@@ -236,8 +237,8 @@
   ;; @see path->name
   ;;
   ;; TODO: Still not 100% satisfied with the behaviour...
-  (define (writer/directory path #!key name (headers '()))
-    (list (writer/directory* path #:name name #:headers headers)))
+  (define (writer/directory path #!key name (headers '()) avoid-chunking?)
+    (list (writer/directory* path #:name name #:headers headers #:avoid-chunking? avoid-chunking?)))
 
   ;; @brief Compute the appropriate body for the files of a filesystem tree.
   ;; @returns An alist that can be used by `with-input-from-request` as the
@@ -256,7 +257,7 @@
   ;; If @a path is relative, an attempt is made to transform it into an absolute path.
   ;;
   ;; @see chicken.file.find-files
-  (define (writer/filesystem path #!key test limit dotfiles follow-symlinks)
+  (define (writer/filesystem path #!key test limit dotfiles follow-symlinks avoid-chunking?)
     (assert (directory-exists? path) "path must be a directory")
 
     (define cwd-components (path-components (current-directory)))
@@ -284,7 +285,7 @@
            ((directory-exists? full-path) writer/directory*)
            ((file-exists? full-path) writer/file*)
            (else (constantly #f)))
-         full-path #:name shortened-path)))
+         full-path #:name shortened-path #:avoid-chunking? avoid-chunking?)))
 
     (=> (find-files
           abs-path
