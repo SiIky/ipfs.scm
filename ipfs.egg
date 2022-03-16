@@ -27,6 +27,12 @@
 
    (extension ipfs.v0
               (types-file)
+              (component-dependencies ipfs.v0.lolevel)
               (modules ipfs.v0)
               (source ipfs.v0.scm))
+
+   (extension ipfs.v0.lolevel
+              (types-file)
+              (modules ipfs.v0.lolevel)
+              (source ipfs.v0.lolevel.scm))
    ))
