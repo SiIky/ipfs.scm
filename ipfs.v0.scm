@@ -62,7 +62,8 @@
           make-pathname
           normalize-pathname)
     (only chicken.process-context current-directory)
-    (only chicken.string ->string string-split))
+    (only chicken.string ->string string-split)
+    chicken.type)
 
   (import
     ; NOTE: I'm not too comfortable with medea deserializing objects into
@@ -124,9 +125,9 @@
   ;;   "/api/v0/commands/completion/bash"
   ;; @returns A list suitable to be given to uri-common.make-uri as the #:path
   ;;   parameter. Example: '(/ "api" "v0" "commands" "completion" "bash")
-  ; TODO: Add type
+  (: http-api-path ((list-of (or symbol string)) --> (list-of string)))
   (define (http-api-path endpoint-path)
-    `(/ ,%api-base% ,%version% ,@(map ->string endpoint-path)))
+    `("/" ,%api-base% ,%version% ,@(map ->string endpoint-path)))
 
   ;; @brief Read a reply as string
   ;; @returns A string with the reply's content
@@ -178,10 +179,12 @@
   (define (writer/file path #!key name (headers '()))
     (list (writer/file* path #:name name #:headers headers)))
 
+  (: path-components (string --> (or false (list-of string))))
   (define (path-components path)
     (receive (_ _ components) (decompose-directory path)
       components))
 
+  (: absolute-path-relative-to-directory ((or false string) string --> string))
   (define (absolute-path-relative-to-directory base-dir-components path)
     (=> path
         (normalize-pathname _)
@@ -190,6 +193,7 @@
         (make-absolute-pathname base-dir-components _)
         (normalize-pathname _)))
 
+  (: longest-common-prefix ((list-of string) --> integer))
   (define (longest-common-prefix strs)
     (let ((s1 (car strs))
           (strs (cdr strs)))
@@ -199,6 +203,7 @@
              (string-length s1)
              strs)))
 
+  (: insert-sorted (procedure 'a (list-of 'a) --> (list-of 'a)))
   (define (insert-sorted <? elem lst)
     (cond
       ((null? lst) `(,elem))
@@ -210,6 +215,7 @@
   ;; Only useful for single files or directories, not lists of them, because it
   ;; doesn't have enough context to compute a more meaninful (and unique)
   ;; name.
+  (: path->name (string #!optional string --> string))
   (define (path->name path #!optional (cwd (current-directory)))
     (let* ((cwd (path-components cwd)))
       (=> path
@@ -393,10 +399,12 @@
         (make-uri path _)
         (call-uri _ reader writer)))
 
+  (: yes (symbol 'a -> (or 'a noreturn)))
   (define (yes argname value)
     (assert (not (nothing? value))
             (string-append (symbol->string argname) " is required"))
     value)
+  (: no (symbol 'a --> 'a))
   (define (no argname value) value)
 
   ;;;
