@@ -82,7 +82,6 @@
 
   (import
     (only srfi-1
-          append-map
           filter
           filter-map
           last)
@@ -208,15 +207,7 @@
     ;        (match-lambda ((k . v) (maybe-map (cute cons k <>) v)))
     (-> (map (lambda (kv) (maybe-map (cute cons (car kv) <>) (cdr kv))) _)
         (filter just? _)
-        (append-map
-          (o
-            ; (K, V) -> [(K, V)]
-            list
-            ; (K, [V]) -> [(K, V)]
-            ;((match-lambda ((k . v) (map (cute cons k <>) v))) _)
-            ; Just (K, V) -> (K, V)
-            maybe->values)
-          _)))
+        (map maybe->values _)))
 
   (define (->maybe x)
     (if (maybe? x)

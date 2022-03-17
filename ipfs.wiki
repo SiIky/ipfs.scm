@@ -49,6 +49,18 @@ The following eggs are required for using this egg:
 
 === API
 
+The official docs define some clear terminology at the top of the page that
+will be useful to know, even though sometimes they aren't themselves consistent
+throughout that page (IMO):
+
+* '''Arguments''' (henceforth called '''API arguments''') are positional
+  arguments (that correspond to positional arguments of the related CLI
+  command) given through the {{arg}} key on the query string of the request.
+
+* '''Flags''' (henceforth called '''API flags''') are optional arguments (that
+  correspond to flags/options of the related CLI command) given through their
+  respective key on the query string of the request.
+
 ==== {{ipfs}} module
 
 This is just a convenience module that reexports everything from the
@@ -164,18 +176,17 @@ TODO: Add documentation
 
 (parameterize ((*port* 5006))
   ; Add `example-directory` and all files under it using CIDv1, but without
-  ; pinning. `#:recursive #t` is necessary?
+  ; pinning.
   (print
     (add #:writer (writer/filesystem "example-directory/")
          #:cid-version 1
-         #:pin #f
-         #:recursive #t))
+         #:pin #f))
 
   ; Add a directory `dir/` and a file `my-file.txt` inside it, by manually
   ; constructing the writer list.
   (let ((writer `(,(writer/directory* "~/some/directory/" #:name "dir/")
                   ,(writer/file* "path/to/file.txt" #:name "dir/my-file.txt"))))
-    (print (add #:writer writer #:cid-version 1 #:pin #f #:recursive #t #:only-hash #t)))
+    (print (add #:writer writer #:cid-version 1 #:pin #f #:only-hash #t)))
 
   ; Get a list of all the peers the node is connected to.
   (print (swarm/peers)))
