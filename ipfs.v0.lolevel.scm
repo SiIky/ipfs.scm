@@ -124,9 +124,9 @@
   ;;   "/api/v0/commands/completion/bash"
   ;; @returns A list suitable to be given to uri-common.make-uri as the #:path
   ;;   parameter. Example: '(/ "api" "v0" "commands" "completion" "bash")
-  (: http-api-path ((list-of (or symbol string)) --> (list-of string)))
+  (: http-api-path ((list-of (or symbol string)) --> (pair symbol (list-of string))))
   (define (http-api-path endpoint-path)
-    `("/" ,%api-base% ,%version% ,@(map ->string endpoint-path)))
+    `(/ ,%api-base% ,%version% ,@(map ->string endpoint-path)))
 
   ; TODO: Add the Abspath header
   (define (internal-writer path #!optional name (headers '()))
