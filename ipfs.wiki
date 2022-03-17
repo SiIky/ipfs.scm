@@ -53,13 +53,9 @@ The official docs define some clear terminology at the top of the page that
 will be useful to know, even though sometimes they aren't themselves consistent
 throughout that page (IMO):
 
-* '''Arguments''' (henceforth called '''API arguments''') are positional
-  arguments (that correspond to positional arguments of the related CLI
-  command) given through the {{arg}} key on the query string of the request.
+; Arguments : (henceforth called '''API arguments''') are positional arguments (that correspond to positional arguments of the related CLI command) given through the {{arg}} key on the query string of the request.
 
-* '''Flags''' (henceforth called '''API flags''') are optional arguments (that
-  correspond to flags/options of the related CLI command) given through their
-  respective key on the query string of the request.
+; Flags : (henceforth called '''API flags''') are optional arguments (that correspond to flags/options of the related CLI command) given through their respective key on the query string of the request.
 
 ==== {{ipfs}} module
 
