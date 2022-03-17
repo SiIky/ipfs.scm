@@ -1,0 +1,214 @@
+[[tags: egg ipfs]]
+
+== ipfs
+
+[[toc:]]
+
+=== Description
+
+An egg to interface with the IPFS
+[[https://docs.ipfs.io/reference/http/api|HTTP API]]. Familiarity with it is
+assumed in this document, and it will be useful to be able to use this library.
+
+There are a ''few'' details that are unspecified or unclearly expressed in the
+official documentation, that may lead to bugs or a wrong interface. If you
+think you've found some error or if you've found something that can be improved
+in this egg, please contact me. If, on the other hand, you've found some error
+or something that can be improved with the official IPFS documentation, do
+contact them (for example on Discourse or directly through an issue on GitHub).
+In this latter case I would appreciate if you could let me know as well so I
+can be keep this egg up to date.
+
+'''NOTE:''' This egg uses [[medea]] to read JSON that by default deserializes
+object keys as symbols, which isn't great. There's the possibility to change
+the JSON reader to use strings instead, but for now be warned: you shouldn't
+use this library with an untrusted IPFS node, it may crash your program. In the
+future the reader will be changed to read the keys as strings instead.
+
+=== Author
+
+siiky
+
+=== Repository
+
+[[https://github.com/siiky/ipfs.scm]]
+
+=== Requirements
+
+The following eggs are required for using this egg:
+
+* [[http-client]]
+* [[intarweb]]
+* [[matchable]]
+* [[medea]]
+* [[openssl]]
+* [[srfi-1]]
+* [[srfi-13]]
+* [[srfi-189]]
+* [[srfi-197]]
+* [[uri-common]]
+
+=== API
+
+==== {{ipfs}} module
+
+This is just a convenience module that reexports everything from the
+{{ipfs.v0}} module described next.
+
+==== {{ipfs.v0}} module
+
+This module exports high-level procedures to communicate with the IPFS node on
+the version {{v0}} of the API. For details, I would highly encourage you to
+read the source code. Each endpoint is defined and exported using
+{{export-rpc-call}} with a high-level and easy to read DSL to make defining the
+whole of the API as easy and boilerplate-free as I can manage.
+
+The exported procedures are named after the endpoint they're supposed to
+represent. E.g., {{add}} for {{/api/v0/add}}, and {{bitswap/ledger}} for
+{{/api/v0/bitswap/ledger}}.
+
+API flags are given to the procedures as keyword arguments, with the name
+defined in the API docs. E.g., the {{cid-version}} flag of {{add}} is given as
+the {{#:cid-version}} keyword argument.
+
+API arguments are given to the procedures as keyword arguments as well, with a
+declarative name. E.g., the one and only argument to {{bitswap/ledger}} is
+called {{peer}} in this library, even though it is sent to the server as
+{{arg}} in the query string. Since only API arguments may be required, and it's
+not a PITA to specify them, procedures check for required arguments. The only
+exceptions are the bodies of the endpoints that require one, such as {{add}}.
+These must be given with the {{#:writer}} keyword argument, that is described
+next.
+
+All procedures have, on top of their arguments and flags, two extra keyword
+arguments: {{#:reader}} & {{#:writer}}. These correspond, respectively, to the
+{{reader-thunk}} and {{writer-thunk}} of {{with-input-from-request}} from
+[[http-client]], and may be given on a per-RPC-call basis (for whatever reason;
+e.g. performance maybe?). Unless noted otherwise (for some exceptions) all
+procedures have a sane default value according to their corresponding endpoint
+-- in general: {{reader/json}} for the reader and {{#f}} for the writer.
+
+The body of {{add}} and others must be given as the {{#:writer}} keyword
+argument, using for example the already defined writers {{writer/file}},
+{{writer/directory}}, or {{writer/filesystem}}.
+
+<parameter>*scheme*</parameter>
+<parameter>*host*</parameter>
+<parameter>*port*</parameter>
+
+The scheme (HTTP/HTTPS), and hostname and port of the IPFS node you want to
+interface with. The default values are {{'http}}, {{"localhost"}}, and {{5001}}
+for {{*scheme*}}, {{*host*}}, and {{*port*}}, respectively. For details, see
+the documentation for {{make-uri}} of [[uri-common]].
+
+<procedure>(reader/plain #!optional number (port (current-input-port)))</procedure>
+<procedure>(reader/json #!optional (port (current-input-port)))</procedure>
+<procedure>(reader/json+ #!optional (port (current-input-port)))</procedure>
+
+Convenience procedures to read the replies.
+
+{{reader/plain}} is just a rename of {{read-string}} from {{chicken.io}}.
+
+{{reader/json}} is just a rename of {{read-json}} from [[medea]], except that
+{{#:consume-trailing-whitespace}} is {{#f}}.
+
+{{reader/json+}} is similar to {{reader/json}}, but it tries to read more than
+one JSON message. This is used as the default reader for {{add}}, that returns
+several JSON objects, one for each added file or directory. The deserialized
+objects are returned in a list in the reverse order of appearance.
+
+<procedure>(writer/file* path #!key name (headers '()))</procedure>
+<procedure>(writer/file path #!key name (headers '()))</procedure>
+<procedure>(writer/directory* path #!key name (headers '()))</procedure>
+<procedure>(writer/directory path #!key name (headers '()))</procedure>
+<procedure>(writer/filesystem path #!key test limit dotfiles follow-symlinks)</procedure>
+
+Convenience procedures to use as the writer given to {{with-input-from-request}}.
+
+{{writer/file}} can be used to send a single file to the IPFS node. {{path}} is
+the path to the file you want to send, and it must be accessible by the client
+(this library), '''not''' the IPFS node. {{name}} is the name of the file to be
+given to IPFS, that is, the name that IPFS will use to save it. {{name}}
+defaults to the basename of {{path}}, and will be URI-encoded before sending to
+allow for special characters, and in particular {{/}}, so that you may send a
+path. {{headers}} is an alist of headers to send for this specific file.
+
+{{writer/directory}} can be used to send a single directory to the IPFS node.
+The arguments of this function are similar to those of {{writer/file}}.
+'''NOTE:''' This does '''not''' send other files or directories contained in
+the specified directory, only an empty directory. For sending a file tree read
+on.
+
+{{writer/filesystem}} can be used to send a file tree to the IPFS node.
+{{path}} specifies the path of the root of the tree you want to send. For
+details on the other parameters see the documentation for {{find-files}} of
+{{chicken.file}}.
+
+If neither of these three procedures quite fit your requirements, you can
+always build yourself the list to pass to {{with-input-from-request}}.
+{{writer/file*}} and {{writer/directory*}} may prove useful. They're similar to
+their non-asterisked counterparts, but they return a single entry instead of an
+entry wrapped in a list (as is expected by {{with-input-from-request}}). For an
+example usage of these see the examples section.
+
+==== {{ipfs.v0.lolevel}} module
+
+This module exports the low-level procedures on which the high-level procedures
+are built.
+
+TODO: Add documentation
+
+=== Examples
+
+<enscript highlight="scheme">
+(import ipfs)
+
+(parameterize ((*port* 5006))
+  ; Add `example-directory` and all files under it using CIDv1, but without
+  ; pinning. `#:recursive #t` is necessary?
+  (print
+    (add #:writer (writer/filesystem "example-directory/")
+         #:cid-version 1
+         #:pin #f
+         #:recursive #t))
+
+  ; Add a directory `dir/` and a file `my-file.txt` inside it, by manually
+  ; constructing the writer list.
+  (let ((writer `(,(writer/directory* "~/some/directory/" #:name "dir/")
+                  ,(writer/file* "path/to/file.txt" #:name "dir/my-file.txt"))))
+    (print (add #:writer writer #:cid-version 1 #:pin #f #:recursive #t #:only-hash #t)))
+
+  ; Get a list of all the peers the node is connected to.
+  (print (swarm/peers)))
+</enscript>
+
+=== License
+
+  This is free and unencumbered software released into the public domain.
+  
+  Anyone is free to copy, modify, publish, use, compile, sell, or
+  distribute this software, either in source code form or as a compiled
+  binary, for any purpose, commercial or non-commercial, and by any
+  means.
+  
+  In jurisdictions that recognize copyright laws, the author or authors
+  of this software dedicate any and all copyright interest in the
+  software to the public domain. We make this dedication for the benefit
+  of the public at large and to the detriment of our heirs and
+  successors. We intend this dedication to be an overt act of
+  relinquishment in perpetuity of all present and future rights to this
+  software under copyright law.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+  OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  OTHER DEALINGS IN THE SOFTWARE.
+  
+  For more information, please refer to <http://unlicense.org>
+
+=== Version History
+
+==== 0.0.1 (2022/03/17)
