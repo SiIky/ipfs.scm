@@ -68,7 +68,6 @@
     (only http-client with-input-from-request)
     (rename (only intarweb make-request)
             (make-request request:make))
-    matchable
     ; NOTE: I'm not too comfortable with medea deserializing objects into
     ;       alists with symbols as keys, but I assume no one will use this to
     ;       communicate with a transmission instance they don't own, and thus
@@ -206,7 +205,8 @@
   ;; @returns The final alist of (key . value) pairs used in `make-uri`.
   (define make-query
     ;        (K, Maybe V) -> Maybe (K, V)
-    (-> (map (match-lambda ((k . v) (maybe-map (cute cons k <>) v))) _)
+    ;        (match-lambda ((k . v) (maybe-map (cute cons k <>) v)))
+    (-> (map (lambda (kv) (maybe-map (cute cons (car kv) <>) (cdr kv))) _)
         (filter just? _)
         (append-map
           (o

@@ -6,7 +6,6 @@
  (dependencies
    http-client
    intarweb
-   matchable
    medea
    openssl
    srfi-1

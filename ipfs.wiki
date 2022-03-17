@@ -39,7 +39,6 @@ The following eggs are required for using this egg:
 
 * [[http-client]]
 * [[intarweb]]
-* [[matchable]]
 * [[medea]]
 * [[openssl]]
 * [[srfi-1]]
