@@ -165,6 +165,16 @@ are built.
 
 TODO: Add documentation
 
+==== Missing Endpoints
+
+You may find that some endpoints aren't implemented. There are two
+possibilities: the endpoint is new and it hasn't been implemented yet; or, the
+endpoint has been deprecated or calling it gives HTTP 404. For the former,
+issues/PRs are very welcome! For the latter, if they're gone, they're gone. If
+you really need them, you can search the Git log. E.g. {{git log -1 -p -S'(key
+rotate)' -- ipfs.v0.scm}} will probably show you
+[[https://github.com/siiky/ipfs.scm/commit/3a3238049c6b484a1a8dc926e441cd454ddc7d0c|3a32380]].
+
 === Examples
 
 <enscript highlight="scheme">
