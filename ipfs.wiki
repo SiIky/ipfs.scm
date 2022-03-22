@@ -40,7 +40,7 @@ The following eggs are required for using this egg:
 * [[http-client]]
 * [[intarweb]]
 * [[medea]]
-* [[openssl]]
+* [[openssl]] -- optional; mandatory if you want to use HTTPS
 * [[srfi-1]]
 * [[srfi-13]]
 * [[srfi-189]]
@@ -227,4 +227,6 @@ rotate)' -- ipfs.v0.scm}} will probably show you
 
 === Version History
 
-==== 0.0.1 (2022/03/17)
+==== 0.0.1 (2022/03/22)
+
+* Initial release.

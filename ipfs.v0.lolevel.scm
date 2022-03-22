@@ -75,7 +75,6 @@
     ; TODO: Change the reader to use strings instead?
     (rename (only medea read-json)
             (read-json json:read))
-    openssl
     (rename (only uri-common make-uri uri-encode-string)
             (make-uri uri:make)
             (uri-encode-string uri:encode-string)))

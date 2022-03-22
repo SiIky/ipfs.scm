@@ -2,21 +2,17 @@
 ((author "siiky")
  (license "unlicense")
  (synopsis "IPFS HTTP API for Scheme")
- (version "0.0.0")
+ (version "0.0.1")
+ (category net)
  (dependencies
    http-client
    intarweb
    medea
-   openssl
    srfi-1
    srfi-13
    srfi-189
    srfi-197
    uri-common)
- (component-options
-   ;(csc-options "-O0" "-d3")
-   ;(linkage static)
-   )
  (components
    (extension ipfs
               (types-file)
