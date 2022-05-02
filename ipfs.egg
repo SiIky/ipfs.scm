@@ -2,7 +2,7 @@
 ((author "siiky")
  (license "unlicense")
  (synopsis "IPFS HTTP API for Scheme")
- (version "0.0.1")
+ (version "0.0.2")
  (category net)
  (dependencies
    http-client
@@ -18,7 +18,8 @@
               (types-file)
               (component-dependencies ipfs.v0)
               (modules ipfs)
-              (source ipfs.scm))
+              (source ipfs.scm)
+              (source-dependencies ipfs.v0.endpoints.scm))
 
    (extension ipfs.v0
               (types-file)

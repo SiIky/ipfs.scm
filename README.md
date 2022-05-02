@@ -55,8 +55,15 @@ ipfs pin ls bafkreicd47ynzf6it5ssdwryvhksy6ylm4s42jlwzjbxhv5zlkw6mwbooq
 (pin/ls #:path "bafkreicd47ynzf6it5ssdwryvhksy6ylm4s42jlwzjbxhv5zlkw6mwbooq")
 ```
 
+## Exporting endpoints to Lua
+
+This library is used as the "source of truth" for [`ipfs.lua`]. To generate the
+Lua endpoints file run `csi -s export-to-lua.scm > /path/to/ipfs-endpoints.lua`
+(no need to install any dependencies or compile anything).
+
 [CHICKEN Scheme]: https://call-cc.org
 [CHICKEN wiki page]: https://wiki.call-cc.org/eggref/5/ipfs
 [HTTP API]: https://docs.ipfs.io/reference/http/api
 [IPFS API Implementation Doc]: https://github.com/ipfs/go-ipfs/blob/a494f48a9dd0a66bd682651b89e7503b5500ac2a/docs/implement-api-bindings.md
 [IPFS]: https://ipfs.io
+[`ipfs.lua`]: https://github.com/siiky/ipfs.lua
