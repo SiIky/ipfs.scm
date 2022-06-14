@@ -71,8 +71,8 @@
             (make-request request:make))
     ; NOTE: I'm not too comfortable with medea deserializing objects into
     ;       alists with symbols as keys, but I assume no one will use this to
-    ;       communicate with a transmission instance they don't own, and thus
-    ;       possibly malicious...
+    ;       communicate with an IPFS node they don't own, and thus possibly
+    ;       malicious...
     ; TODO: Change the reader to use strings instead?
     (rename (only medea read-json)
             (read-json json:read))
