@@ -230,3 +230,10 @@ rotate)' -- ipfs.v0.scm}} will probably show you
 ==== 0.0.1 (2022/03/22)
 
 * Initial release.
+
+==== 0.0.2 (2022/06/14)
+
+* Gather endpoint definitions in a single {{include}}able file -- makes it
+  easier to export to other languages.
+* Add {{export-to-lua.scm}}.
+* Change query-string separator to {{&}}.
