@@ -47,6 +47,7 @@
           make-parameter
           o
           open-input-string
+          parameterize
           receive)
     (only chicken.file
           directory-exists?
@@ -75,7 +76,10 @@
     ; TODO: Change the reader to use strings instead?
     (rename (only medea read-json)
             (read-json json:read))
-    (rename (only uri-common make-uri uri-encode-string)
+    (rename (only uri-common
+                  make-uri
+                  uri-encode-string
+                  form-urlencoded-separator)
             (make-uri uri:make)
             (uri-encode-string uri:encode-string)))
 
@@ -180,7 +184,8 @@
 
   ;; @see `uri-common`'s `make-uri`
   (define (make-uri path query)
-    (uri:make #:scheme (*scheme*) #:host (*host*) #:port (*port*) #:path path #:query query))
+    (parameterize ((form-urlencoded-separator "&"))
+      (uri:make #:scheme (*scheme*) #:host (*host*) #:port (*port*) #:path path #:query query)))
 
   ;; @see `intarweb`'s `make-request`
   (define (make-request uri)
