@@ -18,14 +18,14 @@
               (types-file)
               (component-dependencies ipfs.v0)
               (modules ipfs)
-              (source ipfs.scm)
-              (source-dependencies ipfs.v0.endpoints.scm))
+              (source ipfs.scm))
 
    (extension ipfs.v0
               (types-file)
               (component-dependencies ipfs.v0.lolevel)
               (modules ipfs.v0)
-              (source ipfs.v0.scm))
+              (source ipfs.v0.scm)
+              (source-dependencies ipfs.v0.endpoints.scm))
 
    (extension ipfs.v0.lolevel
               (types-file)
