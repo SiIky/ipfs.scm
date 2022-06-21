@@ -51,22 +51,23 @@
 (export-rpc-call
   ()
   (block/put)
-  (String format)
+  (String cid-codec)
   (String mhtype)
   (Int mhlen)
-  (Bool pin))
+  (Bool pin)
+  (Bool allow-big-block))
 
 (export-rpc-call
   ()
   (block/rm
-    (String hash yes))
+    (String cid yes))
   (Bool force)
   (Bool quiet))
 
 (export-rpc-call
   ()
   (block/stat
-    (String hash yes)))
+    (String cid yes)))
 
 (export-rpc-call
   ()
@@ -115,7 +116,8 @@
 (export-rpc-call
   ()
   (cid/codecs)
-  (Bool numeric))
+  (Bool numeric)
+  (Bool supported))
 
 (export-rpc-call
   ()
@@ -123,13 +125,14 @@
     (String cid yes))
   (String f)
   (String v)
-  (String codec)
+  (String mc)
   (String b))
 
 (export-rpc-call
   ()
   (cid/hashes)
-  (Bool numeric))
+  (Bool numeric)
+  (Bool supported))
 
 (export-rpc-call
   ()
@@ -175,7 +178,8 @@
   (dag/import)
   (Bool pin-roots)
   (Bool silent)
-  (Bool stats))
+  (Bool stats)
+  (Bool allow-big-block))
 
 (export-rpc-call
   ()
@@ -183,7 +187,8 @@
   (String store-codec)
   (String input-codec)
   (Bool pin)
-  (String hash))
+  (String hash)
+  (Bool allow-big-block))
 
 (export-rpc-call
   ()
@@ -252,17 +257,14 @@
   (reader/plain)
   (diag/profile)
   (String output)
-  (String cpu-profile-time))
+  ((Array String) collectors)
+  (String profile-time)
+  (Int mutex-profile-fraction)
+  (String block-profile-rate))
 
 (export-rpc-call
   (reader/plain)
   (diag/sys))
-
-(export-rpc-call
-  ()
-  (dns
-    (String domain yes))
-  (Bool recursive))
 
 (export-rpc-call
   (reader/plain)
@@ -376,7 +378,8 @@
   (reader/plain)
   (key/export
     (String key yes))
-  (String output))
+  (String output)
+  (String format))
 
 (export-rpc-call
   ()
@@ -390,7 +393,9 @@
   ()
   (key/import
     (String name yes))
-  (String ipns-base))
+  (String ipns-base)
+  (String format)
+  (Bool allow-any-key-type))
 
 (export-rpc-call
   ()
@@ -496,14 +501,6 @@
   (UInt dht-record-count)
   (String dht-timeout)
   (Bool stream))
-
-; TODO: Maybe change `obj1` & `obj2` to better names.
-(export-rpc-call
-  ()
-  (object/diff
-    (String obj1 yes)
-    (String obj2 yes))
-  (Bool verbose))
 
 ; TODO: Didn't understand the example response of the docs; try to get an
 ;       actual example.
@@ -664,10 +661,6 @@
 
 (export-rpc-call
   ()
-  (repo/fsck))
-
-(export-rpc-call
-  ()
   (repo/gc)
   (Bool stream-errors)
   (Bool quiet))
@@ -692,10 +685,8 @@
   (resolve
     (String name no))
   (Bool recursive)
-  (Bool nocache)
   (Int dht-record-count)
-  (String dht-timeout)
-  (Bool stream))
+  (String dht-timeout))
 
 (export-rpc-call
   (reader/plain)
@@ -769,6 +760,11 @@
     (String filter yes)))
 
 (export-rpc-call
+  (reader/plain)
+  (swarm/limit
+    (String scope yes)))
+
+(export-rpc-call
   ()
   (swarm/peering/add
     (String peer yes)))
@@ -791,25 +787,14 @@
   (Bool direction))
 
 (export-rpc-call
-  ()
-  (tar/add))
-
-(export-rpc-call
   (reader/plain)
-  (tar/cat
-    (String path yes)))
+  (swarm/stats
+    (String scope yes)))
 
 (export-rpc-call
   (reader/plain)
   (update
     (String arguments no)))
-
-(export-rpc-call
-  ()
-  (urlstore/add
-    (String url yes))
-  (Bool trickle)
-  (Bool pin))
 
 (export-rpc-call
   ()
