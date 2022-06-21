@@ -237,3 +237,10 @@ rotate)' -- ipfs.v0.scm}} will probably show you
   easier to export to other languages.
 * Add {{export-to-lua.scm}}.
 * Change query-string separator to {{&}}.
+
+==== 0.0.3 (2022/06/21)
+
+* Update exported endpoints to match the latest IPFS v0.13.0
+  ([[https://github.com/ipfs/go-ipfs/releases/tag/v0.13.0|release notes]];
+  [[https://github.com/ipfs/ipfs-docs/blob/26b315c3b2073243030c238278d8df65643208e6/docs/reference/http/api.md|API docs]]).
+* Remove {{progress}} flags -- I believe they're ignored for the HTTP API.
