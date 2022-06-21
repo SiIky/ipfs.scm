@@ -9,7 +9,6 @@
   (reader/json+)
   (add)
   (Bool silent)
-  (Bool progress)
   (Bool trickle)
   (Bool only-hash)
   (Bool wrap-with-directory)
@@ -164,8 +163,7 @@
 (export-rpc-call
   (reader/plain)
   (dag/export
-    (String cid yes))
-  (Bool progress))
+    (String cid yes)))
 
 (export-rpc-call
   (reader/plain)
@@ -198,8 +196,7 @@
 (export-rpc-call
   ()
   (dag/stat
-    (String cid yes))
-  (Bool progress))
+    (String cid yes)))
 
 (export-rpc-call
   ()
@@ -548,8 +545,7 @@
   ()
   (pin/add
     (String path yes))
-  (Bool recursive)
-  (Bool progress))
+  (Bool recursive))
 
 (export-rpc-call
   ()
