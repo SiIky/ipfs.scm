@@ -1,5 +1,5 @@
-(repo git "git://github.com/siiky/ipfs.scm.git")
-(uri targz "https://codeload.github.com/siiky/ipfs.scm/tar.gz/{egg-release}")
+(repo git "https://git.sr.ht/~siiky/ipfs.scm")
+(uri targz "https://git.sr.ht/~siiky/ipfs.scm/archive/{egg-release}.tar.gz")
 (release "0.0.1")
 (release "0.0.2")
 (release "0.0.3")
