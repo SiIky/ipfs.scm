@@ -6,8 +6,8 @@
 
 === Description
 
-An egg to interface with the IPFS
-[[https://docs.ipfs.io/reference/http/api|HTTP API]]. Familiarity with it is
+An egg to interface with the Kubo
+[[https://docs.ipfs.io/reference/kubo/rpc|RPC API]]. Familiarity with it is
 assumed in this document, and it will be useful to be able to use this library.
 
 There are a ''few'' details that are unspecified or unclearly expressed in the
@@ -16,13 +16,13 @@ think you've found some error or if you've found something that can be improved
 in this egg, please contact me. If, on the other hand, you've found some error
 or something that can be improved with the official IPFS documentation, do
 contact them (for example on Discourse or directly through an issue on GitHub).
-In this latter case I would appreciate if you could let me know as well so I
-can be keep this egg up to date.
+In this latter case, and when relevant, I would appreciate if you could let me
+know as well so I can be keep this egg up to date.
 
 '''NOTE:''' This egg uses [[medea]] to read JSON that by default deserializes
 object keys as symbols, which isn't great. There's the possibility to change
 the JSON reader to use strings instead, but for now be warned: you shouldn't
-use this library with an untrusted IPFS node, it may crash your program. In the
+use this library with an untrusted Kubo node, it may crash your program. In the
 future the reader will be changed to read the keys as strings instead.
 
 === Author
@@ -31,7 +31,7 @@ siiky
 
 === Repository
 
-[[https://github.com/siiky/ipfs.scm]]
+[[https://git.sr.ht/~siiky/ipfs.scm]]
 
 === Requirements
 
@@ -64,7 +64,7 @@ This is just a convenience module that reexports everything from the
 
 ==== {{ipfs.v0}} module
 
-This module exports high-level procedures to communicate with the IPFS node on
+This module exports high-level procedures to communicate with the Kubo node on
 the version {{v0}} of the API. For details, I would highly encourage you to
 read the source code. Each endpoint is defined and exported using
 {{export-rpc-call}} with a high-level and easy to read DSL to make defining the
@@ -88,8 +88,8 @@ These must be given with the {{#:writer}} keyword argument, that is described
 next.
 
 All procedures have, on top of their arguments and flags, two extra keyword
-arguments: {{#:reader}} & {{#:writer}}. These correspond, respectively, to the
-{{reader-thunk}} and {{writer-thunk}} of {{with-input-from-request}} from
+arguments: {{#:reader}} and {{#:writer}}. These correspond, respectively, to
+the {{reader-thunk}} and {{writer-thunk}} of {{with-input-from-request}} from
 [[http-client]], and may be given on a per-RPC-call basis (for whatever reason;
 e.g. performance maybe?). Unless noted otherwise (for some exceptions) all
 procedures have a sane default value according to their corresponding endpoint
@@ -103,7 +103,7 @@ argument, using for example the already defined writers {{writer/file}},
 <parameter>*host*</parameter>
 <parameter>*port*</parameter>
 
-The scheme (HTTP/HTTPS), and hostname and port of the IPFS node you want to
+The scheme (HTTP/HTTPS), and hostname and port of the Kubo node you want to
 interface with. The default values are {{'http}}, {{"localhost"}}, and {{5001}}
 for {{*scheme*}}, {{*host*}}, and {{*port*}}, respectively. For details, see
 the documentation for {{make-uri}} of [[uri-common]].
@@ -114,15 +114,15 @@ the documentation for {{make-uri}} of [[uri-common]].
 
 Convenience procedures to read the replies.
 
-{{reader/plain}} is just a rename of {{read-string}} from {{chicken.io}}.
+{{reader/plain}} is just a rename of {{read-string}} from {{(chicken io)}}.
 
 {{reader/json}} is just a rename of {{read-json}} from [[medea]], except that
 {{#:consume-trailing-whitespace}} is {{#f}}.
 
 {{reader/json+}} is similar to {{reader/json}}, but it tries to read more than
 one JSON message. This is used as the default reader for {{add}}, that returns
-several JSON objects, one for each added file or directory. The deserialized
-objects are returned in a list in the reverse order of appearance.
+several JSON messages, one for each added file or directory. The deserialized
+messages are returned in a list in the reverse order of appearance.
 
 <procedure>(writer/file* path #!key name (headers '()))</procedure>
 <procedure>(writer/file path #!key name (headers '()))</procedure>
@@ -132,24 +132,24 @@ objects are returned in a list in the reverse order of appearance.
 
 Convenience procedures to use as the writer given to {{with-input-from-request}}.
 
-{{writer/file}} can be used to send a single file to the IPFS node. {{path}} is
+{{writer/file}} can be used to send a single file to the Kubo node. {{path}} is
 the path to the file you want to send, and it must be accessible by the client
-(this library), '''not''' the IPFS node. {{name}} is the name of the file to be
-given to IPFS, that is, the name that IPFS will use to save it. {{name}}
+(this library), '''not''' the Kubo node. {{name}} is the name of the file to be
+given to Kubo, that is, the name that Kubo will use to save it. {{name}}
 defaults to the basename of {{path}}, and will be URI-encoded before sending to
 allow for special characters, and in particular {{/}}, so that you may send a
 path. {{headers}} is an alist of headers to send for this specific file.
 
-{{writer/directory}} can be used to send a single directory to the IPFS node.
+{{writer/directory}} can be used to send a single directory to the Kubo node.
 The arguments of this function are similar to those of {{writer/file}}.
 '''NOTE:''' This does '''not''' send other files or directories contained in
 the specified directory, only an empty directory. For sending a file tree read
 on.
 
-{{writer/filesystem}} can be used to send a file tree to the IPFS node.
+{{writer/filesystem}} can be used to send a file tree to the Kubo node.
 {{path}} specifies the path of the root of the tree you want to send. For
 details on the other parameters see the documentation for {{find-files}} of
-{{chicken.file}}.
+{{(chicken file)}}.
 
 If neither of these three procedures quite fit your requirements, you can
 always build yourself the list to pass to {{with-input-from-request}}.
@@ -173,7 +173,7 @@ endpoint has been deprecated or calling it gives HTTP 404. For the former,
 issues/PRs are very welcome! For the latter, if they're gone, they're gone. If
 you really need them, you can search the Git log. E.g. {{git log -1 -p -S'(key
 rotate)' -- ipfs.v0.scm}} will probably show you
-[[https://github.com/siiky/ipfs.scm/commit/3a3238049c6b484a1a8dc926e441cd454ddc7d0c|3a32380]].
+[[https://git.sr.ht/~siiky/ipfs.scm/commit/3a3238049c6b484a1a8dc926e441cd454ddc7d0c|3a32380]].
 
 === Examples
 
