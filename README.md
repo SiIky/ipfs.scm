@@ -6,6 +6,27 @@ implementation.**
 This document will serve as implementation documentation. For user
 documentation take a look at the [CHICKEN wiki page]
 
+## Updating endpoints
+
+I'll try to keep this library up-to-date with the latest Kubo release. For most
+updates only the endpoints need any changes (adding/removing endpoints and/or
+parameters). This section documents the best process I've found so far.
+
+The relevant Kubo source code is on the main repo at
+[`/core/commands`](https://github.com/ipfs/kubo/tree/master/core/commands). The
+source of the API page is on the docs repo at
+[`/docs/reference/kubo/rpc.md`](https://github.com/ipfs/ipfs-docs/blob/main/docs/reference/kubo/rpc.md).
+
+It's helpful to see the diff between versions, so clone the docs repo and
+`git log -- docs/reference/kubo/rpc.md`. Try to find the last commit of the
+previous version (usually stated on the commit message; `git log --grep` may
+help) and then `git diff $COMMIT..main -- docs/reference/kubo/rpc.md`, assuming
+`main` already has the docs for the latest release.
+
+Unfortunately, some changes look like deletes and you have to scroll down to
+find the related additions. This process is very manual, but is still better
+than going over the whole API page.
+
 ## Examples & Low-level differences
 
 Mainly documenting for myself, to compare the library and the `ipfs` command,
