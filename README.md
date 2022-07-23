@@ -1,6 +1,7 @@
 # ipfs.scm
 
-**[CHICKEN Scheme] library for the [IPFS] [HTTP API].**
+**[CHICKEN Scheme] library for the [Kubo] [RPC API], the reference [IPFS] node
+implementation.**
 
 This document will serve as implementation documentation. For user
 documentation take a look at the [CHICKEN wiki page]
@@ -63,7 +64,8 @@ Lua endpoints file run `csi -s export-to-lua.scm > /path/to/ipfs-endpoints.lua`
 
 [CHICKEN Scheme]: https://call-cc.org
 [CHICKEN wiki page]: https://wiki.call-cc.org/eggref/5/ipfs
-[HTTP API]: https://docs.ipfs.io/reference/http/api
-[IPFS API Implementation Doc]: https://github.com/ipfs/go-ipfs/blob/a494f48a9dd0a66bd682651b89e7503b5500ac2a/docs/implement-api-bindings.md
+[IPFS API Implementation Doc]: https://github.com/ipfs/kubo/blob/3902c9be004e0a0e550d57c07a7068c7890deee5/docs/implement-api-bindings.md
 [IPFS]: https://ipfs.io
-[`ipfs.lua`]: https://github.com/siiky/ipfs.lua
+[Kubo]: https://github.com/ipfs/kubo
+[RPC API]: https://docs.ipfs.io/reference/kubo/rpc
+[`ipfs.lua`]: https://git.sr.ht/~siiky/ipfs.lua
