@@ -175,6 +175,18 @@ you really need them, you can search the Git log. E.g. {{git log -1 -p -S'(key
 rotate)' -- ipfs.v0.scm}} will probably show you
 [[https://git.sr.ht/~siiky/ipfs.scm/commit/3a3238049c6b484a1a8dc926e441cd454ddc7d0c|3a32380]].
 
+=== Long-running Operations
+
+Depending on your use case, some API calls may take a long time: minutes or
+even hours. To prevent the connection to the node from being terminated
+prematurely, you may want to adjust the TCP read timeout through the
+{{tcp-read-timeout}} parameter of the {{(chicken tcp)}} module.
+
+<enscript highlight="scheme">
+(import (chicken tcp))
+(tcp-read-timeout #f)
+</enscript>
+
 === Examples
 
 <enscript highlight="scheme">
