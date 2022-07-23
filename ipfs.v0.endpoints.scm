@@ -200,38 +200,6 @@
 
 (export-rpc-call
   ()
-  (dht/findpeer
-    (String peer yes))
-  (Bool verbose))
-
-(export-rpc-call
-  ()
-  (dht/findprovs
-    (String key yes))
-  (Bool verbose)
-  (Int num-providers))
-
-(export-rpc-call
-  ()
-  (dht/get
-    (String key yes))
-  (Bool verbose))
-
-(export-rpc-call
-  ()
-  (dht/provide
-    (String key yes))
-  (Bool verbose)
-  (Bool recursive))
-
-(export-rpc-call
-  ()
-  (dht/put
-    (String key yes))
-  (Bool verbose))
-
-(export-rpc-call
-  ()
   (dht/query
     (String peer yes))
   (Bool verbose))
@@ -683,6 +651,38 @@
   (Bool recursive)
   (Int dht-record-count)
   (String dht-timeout))
+
+(export-rpc-call
+  ()
+  (routing/findpeer
+    (String peer yes))
+  (Bool verbose))
+
+(export-rpc-call
+  ()
+  (routing/findprovs
+    (String key yes))
+  (Bool verbose)
+  (Int num-providers))
+
+(export-rpc-call
+  ()
+  (routing/get
+    (String key yes))
+  (Bool verbose))
+
+(export-rpc-call
+  ()
+  (routing/provide
+    (String key yes))
+  (Bool verbose)
+  (Bool recursive))
+
+(export-rpc-call
+  ()
+  (routing/put
+    (String key yes))
+  (Bool verbose))
 
 (export-rpc-call
   (reader/plain)
