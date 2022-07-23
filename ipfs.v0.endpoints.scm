@@ -610,7 +610,7 @@
     (String topic yes)))
 
 (export-rpc-call
-  ()
+  (reader/json+)
   (refs
     (String path yes))
   (String format)
@@ -620,7 +620,7 @@
   (Int max-depth))
 
 (export-rpc-call
-  ()
+  (reader/json+)
   (refs/local))
 
 (export-rpc-call
