@@ -229,7 +229,7 @@
   (define (*->bool name value) (just (if value "true" "false")))
   (define (*->string name value)
     (assert (not (not value))
-            (string-append name "must not be false"))
+            (string-append name " must not be false"))
     (just (->string value)))
 
   (define (*->int name n)
