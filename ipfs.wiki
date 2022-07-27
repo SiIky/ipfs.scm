@@ -263,4 +263,5 @@ prematurely, you may want to adjust the TCP read timeout through the
   ([[https://github.com/ipfs/kubo/releases/tag/v0.14.0|release notes]];
   [[https://github.com/ipfs/ipfs-docs/blob/ca6603d06b143b483251fd8e43b7bbdcf89d8756/docs/reference/kubo/rpc.md|API docs]]);
 * Rename {{dht/*}} to {{routing/*}};
+* Change the default reader of {{refs}} and {{refs/local}} to {{reader/json+}}, thanks to teiresias;
 * Add note about TCP timeouts to the docs, thanks to teiresias.
