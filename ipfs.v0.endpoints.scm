@@ -644,7 +644,7 @@
 (export-rpc-call
   ()
   (resolve
-    (String name no))
+    (String name yes))
   (Bool recursive)
   (Int dht-record-count)
   (String dht-timeout))
