@@ -289,9 +289,6 @@
   ()
   (files/stat
     (String path yes))
-  (String format)
-  (Bool hash)
-  (Bool size)
   (Bool with-local))
 
 (export-rpc-call
