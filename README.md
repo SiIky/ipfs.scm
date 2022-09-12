@@ -13,9 +13,9 @@ updates only the endpoints need any changes (adding/removing endpoints and/or
 parameters). This section documents the best process I've found so far.
 
 The relevant Kubo source code is on the main repo at
-[`/core/commands`](https://github.com/ipfs/kubo/tree/master/core/commands). The
+[`core/commands`](https://github.com/ipfs/kubo/tree/master/core/commands). The
 source of the API page is on the docs repo at
-[`/docs/reference/kubo/rpc.md`](https://github.com/ipfs/ipfs-docs/blob/main/docs/reference/kubo/rpc.md).
+[`docs/reference/kubo/rpc.md`](https://github.com/ipfs/ipfs-docs/blob/main/docs/reference/kubo/rpc.md).
 
 It's helpful to see the diff between versions, so clone the docs repo and
 `git log -- docs/reference/kubo/rpc.md`. Try to find the last commit of the
@@ -26,6 +26,9 @@ help) and then `git diff $COMMIT..main -- docs/reference/kubo/rpc.md`, assuming
 Unfortunately, some changes look like deletes and you have to scroll down to
 find the related additions. This process is very manual, but is still better
 than going over the whole API page.
+
+In case there's nothing to change in the egg for the latest Kubo version,
+update only the Wiki page.
 
 ## Examples & Low-level differences
 
