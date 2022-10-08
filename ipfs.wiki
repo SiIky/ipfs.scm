@@ -55,6 +55,7 @@ The following eggs are required for using this egg:
 <tr><td>0.0.2</td><td>0.12.0</td></tr>
 <tr><td>0.0.3</td><td>0.13.0</td></tr>
 <tr><td>0.0.4</td><td>0.14.0 ~ 0.15.0</td></tr>
+<tr><td>0.0.5</td><td>0.16.0</td></tr>
 </table>
 
 === API
@@ -275,3 +276,10 @@ prematurely, you may want to adjust the TCP read timeout through the
 * Rename {{dht/*}} to {{routing/*}};
 * Change the default reader of {{refs}} and {{refs/local}} to {{reader/json+}}, thanks to teiresias;
 * Add note about TCP timeouts to the docs, thanks to teiresias.
+
+==== 0.0.5 (2022/10/08)
+
+* Update exported endpoints to match the latest Kubo v0.16.0
+  ([[https://github.com/ipfs/kubo/releases/tag/v0.16.0|release notes]];
+  [[https://github.com/ipfs/ipfs-docs/blob/e39d1ba967a9bffb06df3e377917acb5bf1c8cb6/docs/reference/kubo/rpc.md|API docs]]);
+* Add {{to-files}} flag to {{add}}
