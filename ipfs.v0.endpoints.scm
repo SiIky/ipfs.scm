@@ -20,7 +20,8 @@
   (Int cid-version)
   (String hash)
   (Bool inline)
-  (Int inline-limit))
+  (Int inline-limit)
+  (String to-files))
 
 (export-rpc-call
   ()
