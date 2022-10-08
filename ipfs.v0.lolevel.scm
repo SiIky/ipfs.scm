@@ -480,5 +480,8 @@
       ((export-rpc-call reader/writer (name arguments ...) flags ...)
        (begin
          (export name)
-         (define name (make-rpc-lambda reader/writer 'name (arguments ...) (flags ...)))))))
+         (define name
+	   (make-rpc-lambda
+	    reader/writer 'name (arguments ...)
+	    ((Bool offline) (String timeout) flags ...)))))))
   )

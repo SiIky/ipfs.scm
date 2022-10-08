@@ -89,6 +89,12 @@ API flags are given to the procedures as keyword arguments, with the name
 defined in the API docs. E.g., the {{cid-version}} flag of {{add}} is given as
 the {{#:cid-version}} keyword argument.
 
+All procedures accept two common flags: {{#:offline}} and {{#:timeout}}. The
+first is a boolean. When {{#t}}, the gateway will perform the operation in
+offline mode, if possible. The {{#:timeout}} flag takes a string: a
+human-readable duration of the sort accepted by the {{--timeout}} global option
+of the ipfs CLI program.
+
 API arguments are given to the procedures as keyword arguments as well, with a
 declarative name. E.g., the one and only argument to {{bitswap/ledger}} is
 called {{peer}} in this library, even though it is sent to the server as
