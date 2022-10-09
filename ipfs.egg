@@ -2,7 +2,7 @@
 ((author "siiky")
  (license "unlicense")
  (synopsis "IPFS HTTP API for Scheme")
- (version "0.0.5")
+ (version "0.0.6")
  (category net)
  (dependencies
    http-client
