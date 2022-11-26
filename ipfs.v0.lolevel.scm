@@ -19,8 +19,12 @@
    writer/directory
    writer/file
    writer/filesystem
+   writer/port
+   writer/string
    writer/directory*
    writer/file*
+   writer/port*
+   writer/string*
 
    %nothing%
    yes
@@ -305,6 +309,18 @@
         (if obj
             (loop (cons obj ret))
             ret))))
+
+  (define (writer/port* port #!key name (headers '()))
+    (writer/internal* port name headers))
+
+  (define (writer/port port #!key name (headers '()))
+    (list (writer/port* port #:name name #:headers headers)))
+
+  (define (writer/string* string name #!optional (headers '()))
+    (call-with-input-string string (cute writer/port* <> name headers)))
+
+  (define (writer/string string name #!optional (headers '()))
+    (list (writer/string* string name headers)))
 
   (define (writer/file* path #!key name (headers '()))
     (writer/internal* path (or name (path->name path)) headers))
