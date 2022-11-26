@@ -51,7 +51,6 @@
           foldl
           make-parameter
           o
-          open-input-string
           parameterize
           receive)
     (only chicken.file
@@ -66,6 +65,7 @@
           make-absolute-pathname
           make-pathname
           normalize-pathname)
+    (only chicken.port call-with-input-string)
     (only chicken.process-context current-directory)
     (only chicken.string ->string string-split)
     chicken.type)
@@ -338,9 +338,8 @@
 
   (define (writer/directory* path #!key name (headers '()))
     (let ((name (or name (path->name path)))
-          (headers (alist-update 'content-type '(application/x-directory) headers))
-          (file (open-input-string "")))
-      (writer/internal* file name headers)))
+          (headers (alist-update 'content-type '(application/x-directory) headers)))
+      (writer/string* "" name headers)))
 
   ;; @brief Compute the appropriate body for a single directory.
   ;; @param path The directory's path -- read by the client, not the IPFS node.
