@@ -629,6 +629,10 @@
 
 (export-rpc-call
   ()
+  (repo/ls))
+
+(export-rpc-call
+  ()
   (repo/stat)
   (Bool size-only)
   (Bool human))
@@ -756,7 +760,8 @@
 (export-rpc-call
   (reader/plain)
   (swarm/limit
-    (String scope yes)))
+    (String scope yes))
+  (Bool reset))
 
 (export-rpc-call
   ()
@@ -783,7 +788,8 @@
 (export-rpc-call
   (reader/plain)
   (swarm/stats
-    (String scope yes)))
+    (String scope yes))
+  (Int min-used-limit-perc))
 
 (export-rpc-call
   (reader/plain)
