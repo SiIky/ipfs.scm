@@ -144,8 +144,12 @@ messages are returned in a list in the reverse order of appearance.
 <procedure>(writer/file path #!key name (headers '()))</procedure>
 <procedure>(writer/directory path #!key name (headers '()))</procedure>
 <procedure>(writer/filesystem path #!key test limit dotfiles follow-symlinks)</procedure>
+<procedure>(writer/port port #!key name (headers '()))</procedure>
+<procedure>(writer/string string name #!optional (headers '()))</procedure>
 <procedure>(writer/file* path #!key name (headers '()))</procedure>
 <procedure>(writer/directory* path #!key name (headers '()))</procedure>
+<procedure>(writer/port* port #!key name (headers '()))</procedure>
+<procedure>(writer/string* string name #!optional (headers '()))</procedure>
 
 Convenience procedures to use as the writer given to {{with-input-from-request}}.
 
@@ -172,19 +176,43 @@ next.
 other parameters see the documentation for {{find-files}} of {{(chicken
 file)}}.
 
-If neither of these three procedures quite fit your requirements, you can
-always build yourself the list to pass to {{with-input-from-request}}.
-{{writer/file*}} and {{writer/directory*}} may prove useful. They're similar to
-their non-asterisked counterparts, but they return a single entry instead of an
-entry wrapped in a list (as is expected by {{with-input-from-request}}). For an
-example usage of these see the examples section.
+{{writer/port}} can be used to send the contents of a port to the Kubo node. If
+{{name}} is not given, {{with-input-from-request}} tries to use the port's own
+name.
+
+{{writer/string}} can be used to send a string as the contents of a file to the
+Kubo node.
+
+If none of these procedures quite fit your requirements, you can always build
+the writer list to pass to {{with-input-from-request}} yourself.
+{{writer/file*}}, {{writer/directory*}}, {{writer/port*}}, and
+{{writer/string*}} may prove useful. They're similar to their non-asterisked
+counterparts, but they return a single entry instead of an entry wrapped in a
+list. See the [[#Examples|examples section]].
+
+For more details, see {{writer/internal}} and {{writer/internal*}}.
 
 ==== {{ipfs.v0.lolevel}} module
 
 This module exports the low-level procedures on which the high-level procedures
 are built.
 
-TODO: Add documentation
+TODO: Complete documentation
+
+<procedure>(writer/internal* path #!optional name (headers '()))</procedure>
+<procedure>(writer/internal path #!optional name (headers '()))</procedure>
+
+These are used internally by most {{writer/*}} procedures. They may be useful
+to define your own writers when those already available don't suit your needs.
+
+For more details, see the documentation for {{with-input-from-request}} and
+{{call-with-input-request}} of the [[http-client]] egg. {{path}} corresponds to
+{{file}}, {{name}} to {{filename}}, and {{headers}} to {{headers}}.
+
+If {{name}} is provided it will be URI-encoded.
+
+{{writer/internal*}} is to {{writer/internal}} what {{writer/file*}} is to
+{{writer/file}}.
 
 ==== Missing Endpoints
 
