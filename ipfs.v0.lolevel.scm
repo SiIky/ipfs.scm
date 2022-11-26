@@ -180,7 +180,7 @@
   ;; name.
   (: path->name (string #!optional string --> string))
   (define (path->name path #!optional (cwd (current-directory)))
-    (let* ((cwd (path-components cwd)))
+    (let ((cwd (path-components cwd)))
       (=> path
           (absolute-path-relative-to-directory cwd _)
           (path-components _)
