@@ -141,32 +141,36 @@ one JSON message. This is used as the default reader for {{add}}, that returns
 several JSON messages, one for each added file or directory. The deserialized
 messages are returned in a list in the reverse order of appearance.
 
-<procedure>(writer/file* path #!key name (headers '()))</procedure>
 <procedure>(writer/file path #!key name (headers '()))</procedure>
-<procedure>(writer/directory* path #!key name (headers '()))</procedure>
 <procedure>(writer/directory path #!key name (headers '()))</procedure>
 <procedure>(writer/filesystem path #!key test limit dotfiles follow-symlinks)</procedure>
+<procedure>(writer/file* path #!key name (headers '()))</procedure>
+<procedure>(writer/directory* path #!key name (headers '()))</procedure>
 
 Convenience procedures to use as the writer given to {{with-input-from-request}}.
 
+{{name}} is the name of the file to be given to Kubo, that is, the name that
+Kubo will use to save it. It is URI-encoded before sending.
+
+{{headers}} is an alist of headers to use for an specific entry. See
+{{with-input-from-request}}.
+
 {{writer/file}} can be used to send a single file to the Kubo node. {{path}} is
 the path to the file you want to send, and it must be accessible by the client
-(this library), '''not''' the Kubo node. {{name}} is the name of the file to be
-given to Kubo, that is, the name that Kubo will use to save it. {{name}}
-defaults to the basename of {{path}}, and will be URI-encoded before sending to
-allow for special characters, and in particular {{/}}, so that you may send a
-path. {{headers}} is an alist of headers to send for this specific file.
+(this library), '''not''' the Kubo node. {{name}} defaults to the basename of
+{{path}}. This allows special characters, such as
+{{/}}, so you can send a path.
 
 {{writer/directory}} can be used to send a single directory to the Kubo node.
 The arguments of this function are similar to those of {{writer/file}}.
 '''NOTE:''' This does '''not''' send other files or directories contained in
 the specified directory, only an empty directory. For sending a file tree read
-on.
+next.
 
 {{writer/filesystem}} can be used to send a file tree to the Kubo node.
-{{path}} specifies the path of the root of the tree you want to send. For
-details on the other parameters see the documentation for {{find-files}} of
-{{(chicken file)}}.
+{{path}} specifies the root of the tree you want to send. For details on the
+other parameters see the documentation for {{find-files}} of {{(chicken
+file)}}.
 
 If neither of these three procedures quite fit your requirements, you can
 always build yourself the list to pass to {{with-input-from-request}}.
