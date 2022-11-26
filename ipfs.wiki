@@ -56,6 +56,7 @@ The following eggs are required for using this egg:
 <tr><td>0.0.3</td><td>0.13.0</td></tr>
 <tr><td>0.0.4</td><td>0.14.0 ~ 0.15.0</td></tr>
 <tr><td>0.0.5 ~ 0.0.6</td><td>0.16.0</td></tr>
+<tr><td>0.0.7</td><td>0.17.0</td></tr>
 </table>
 
 === API
@@ -325,3 +326,13 @@ prematurely, you may want to adjust the TCP read timeout through the
 ==== 0.0.6 (2022/10/09)
 
 * Add {{#:offline}} and {{#:timeout}} flags, thanks to teiresias.
+
+==== 0.0.7 (2022/11/26)
+
+* Update exported endpoints to match the latest Kubo v0.17.0
+  ([[https://github.com/ipfs/kubo/releases/tag/v0.17.0|release notes]];
+  [[https://github.com/ipfs/ipfs-docs/blob/8d1aae1637a2299db22153d3060b6cca4f5ffb37/docs/reference/kubo/rpc.md|API docs]]);
+* Add {{repo/ls}};
+* Add {{reset}} flag to {{swarm/limit}};
+* Add {{min-used-limit-perc}} flag to {{swarm/stats}};
+* Add {{writer/port}}, {{writer/string}}, {{writer/port*}}, and {{writer/string*}}, as suggested by teiresias.
