@@ -14,7 +14,8 @@
    reader/json
    reader/json+
    reader/plain
-   internal-writer
+   writer/internal
+   writer/internal*
    writer/directory
    writer/file
    writer/filesystem
@@ -130,13 +131,16 @@
     `(/ ,%api-base% ,%version% ,@(map ->string endpoint-path)))
 
   ; TODO: Add the Abspath header
-  (define (internal-writer path #!optional name (headers '()))
+  (define (writer/internal* path #!optional name (headers '()))
     (let ((path (if path `(#:file ,path) '()))
           (name (if name `(#:filename ,(uri:encode-string name)) '()))
           (headers (if (and (list? headers) (not (null? headers)))
                        `(#:headers ,headers)
                        '())))
       `(file ,@path ,@name ,@headers)))
+
+  (define (writer/internal path #!optional name (headers '()))
+    (list (writer/internal* path name headers)))
 
   (: path-components (string --> (or false (list-of string))))
   (define (path-components path)
@@ -303,7 +307,7 @@
             ret))))
 
   (define (writer/file* path #!key name (headers '()))
-    (internal-writer path (or name (path->name path)) headers))
+    (writer/internal* path (or name (path->name path)) headers))
 
   ;; @brief Compute the appropriate body for a single file.
   ;; @param path The file's path -- read by the client, not the IPFS node.
@@ -320,7 +324,7 @@
     (let ((name (or name (path->name path)))
           (headers (alist-update 'content-type '(application/x-directory) headers))
           (file (open-input-string "")))
-      (internal-writer file name headers)))
+      (writer/internal* file name headers)))
 
   ;; @brief Compute the appropriate body for a single directory.
   ;; @param path The directory's path -- read by the client, not the IPFS node.
