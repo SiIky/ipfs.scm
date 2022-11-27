@@ -56,7 +56,7 @@ The following eggs are required for using this egg:
 <tr><td>0.0.3</td><td>0.13.0</td></tr>
 <tr><td>0.0.4</td><td>0.14.0 ~ 0.15.0</td></tr>
 <tr><td>0.0.5 ~ 0.0.6</td><td>0.16.0</td></tr>
-<tr><td>0.0.7</td><td>0.17.0</td></tr>
+<tr><td>0.0.7 ~ 0.0.8</td><td>0.17.0</td></tr>
 </table>
 
 === API
@@ -336,3 +336,7 @@ prematurely, you may want to adjust the TCP read timeout through the
 * Add {{reset}} flag to {{swarm/limit}};
 * Add {{min-used-limit-perc}} flag to {{swarm/stats}};
 * Add {{writer/port}}, {{writer/string}}, {{writer/port*}}, and {{writer/string*}}, as suggested by teiresias.
+
+==== 0.0.8 (2022/11/27)
+
+* Export {{writer/*}} procedures from {{ipfs.v0}} module.
