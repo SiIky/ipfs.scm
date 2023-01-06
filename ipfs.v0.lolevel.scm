@@ -399,11 +399,11 @@
     (define (writer shortened-path/full-path)
       (let ((shortened-path (car shortened-path/full-path))
             (full-path (cdr shortened-path/full-path)))
-        ((cond
-           ((directory-exists? full-path) writer/directory*)
-           ((file-exists? full-path) writer/file*)
-           (else (constantly #f)))
-         full-path #:name shortened-path)))
+        (cond
+          ((directory-exists? full-path) #f)
+          ((file-exists? full-path)
+           (writer/file* full-path #:name shortened-path))
+          (else #f))))
 
     (=> (find-files
           abs-path
