@@ -338,13 +338,6 @@
   (String peerid-base))
 
 (export-rpc-call
-  (reader/plain)
-  (key/export
-    (String key yes))
-  (String output)
-  (String format))
-
-(export-rpc-call
   ()
   (key/gen
     (String name yes))
@@ -790,11 +783,6 @@
   (swarm/stats
     (String scope yes))
   (Int min-used-limit-perc))
-
-(export-rpc-call
-  (reader/plain)
-  (update
-    (String arguments no)))
 
 (export-rpc-call
   ()
