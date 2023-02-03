@@ -347,4 +347,4 @@ prematurely, you may want to adjust the TCP read timeout through the
 * Update exported endpoints to match the latest Kubo v0.18.0
   ([[https://github.com/ipfs/kubo/releases/tag/v0.18.0|release notes]];
   [[https://github.com/ipfs/ipfs-docs/blob/82da9516dcd665e84e890678b7b8ed61cba1bc05/docs/reference/kubo/rpc.md|API docs]]);
-* Modify {{writer/filesystem}} to not sent directories.
+* Modify {{writer/filesystem}} to not send directories.
