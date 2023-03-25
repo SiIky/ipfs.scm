@@ -424,6 +424,11 @@
 
 (export-rpc-call
   ()
+  (name/inspect)
+  (String verify))
+
+(export-rpc-call
+  ()
   (name/publish
     (String path yes))
   (Bool resolve)
@@ -582,25 +587,6 @@
   (Int count))
 
 (export-rpc-call
-  ()
-  (pubsub/ls))
-
-(export-rpc-call
-  ()
-  (pubsub/peers
-    (String topic no)))
-
-(export-rpc-call
-  (reader/plain)
-  (pubsub/pub
-    (String topic yes)))
-
-(export-rpc-call
-  ()
-  (pubsub/sub
-    (String topic yes)))
-
-(export-rpc-call
   (reader/json+)
   (refs
     (String path yes))
@@ -663,8 +649,7 @@
 (export-rpc-call
   ()
   (routing/get
-    (String key yes))
-  (Bool verbose))
+    (String key yes)))
 
 (export-rpc-call
   ()
@@ -676,8 +661,7 @@
 (export-rpc-call
   ()
   (routing/put
-    (String key yes))
-  (Bool verbose))
+    (String key yes)))
 
 (export-rpc-call
   (reader/plain)
@@ -751,12 +735,6 @@
     (String filter yes)))
 
 (export-rpc-call
-  (reader/plain)
-  (swarm/limit
-    (String scope yes))
-  (Bool reset))
-
-(export-rpc-call
   ()
   (swarm/peering/add
     (String peer yes)))
@@ -779,10 +757,8 @@
   (Bool direction))
 
 (export-rpc-call
-  (reader/plain)
-  (swarm/stats
-    (String scope yes))
-  (Int min-used-limit-perc))
+ ()
+ (swarm/resources))
 
 (export-rpc-call
   ()
