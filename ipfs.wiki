@@ -59,6 +59,7 @@ The following eggs are required for using this egg:
 <tr><td>0.0.7 ~ 0.0.8</td><td>0.17.0</td></tr>
 <tr><td>0.0.9</td><td>0.18.0 ~ 0.18.1</td></tr>
 <tr><td>0.0.10</td><td>0.19.0 ~ 0.19.1</td></tr>
+<tr><td>0.0.11</td><td>0.20.0</td></tr>
 </table>
 
 === API
@@ -354,4 +355,10 @@ prematurely, you may want to adjust the TCP read timeout through the
 
 * Update exported endpoints to match the latest Kubo v0.19.0
   ([[https://github.com/ipfs/kubo/releases/tag/v0.19.0|release notes]];
-  [[https://github.com/ipfs/ipfs-docs/blob/60c0c0b36768d49d8e9fd3dc8d9b99d74e5ca107/docs/reference/kubo/rpc.md|API docs]]);
+  [[https://github.com/ipfs/ipfs-docs/blob/60c0c0b36768d49d8e9fd3dc8d9b99d74e5ca107/docs/reference/kubo/rpc.md|API docs]]).
+
+==== 0.0.11 (2023/05/15)
+
+* Update exported endpoints to match the latest Kubo v0.20.0
+  ([[https://github.com/ipfs/kubo/releases/tag/v0.20.0|release notes]];
+  [[https://github.com/ipfs/ipfs-docs/blob/9661bdfe4c1d972216babec98c2b94cc28603954/docs/reference/kubo/rpc.md|API docs]]).
