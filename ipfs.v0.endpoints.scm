@@ -754,7 +754,8 @@
   (Bool verbose)
   (Bool streams)
   (Bool latency)
-  (Bool direction))
+  (Bool direction)
+  (Bool identify))
 
 (export-rpc-call
  ()
