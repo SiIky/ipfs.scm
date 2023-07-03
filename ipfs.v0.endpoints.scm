@@ -661,7 +661,8 @@
 (export-rpc-call
   ()
   (routing/put
-    (String key yes)))
+    (String key yes))
+  (Bool allow-offline))
 
 (export-rpc-call
   (reader/plain)
