@@ -425,7 +425,8 @@
 (export-rpc-call
   ()
   (name/inspect)
-  (String verify))
+  (String verify)
+  (Bool dump))
 
 (export-rpc-call
   ()
@@ -437,6 +438,7 @@
   (String ttl)
   (String key)
   (Bool quieter)
+  (Bool v1compat)
   (String ipns-base))
 
 (export-rpc-call
