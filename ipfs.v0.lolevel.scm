@@ -473,10 +473,14 @@
          (lambda (#!key
                   (reader default-reader)
                   (writer default-writer)
+                  (offline %nothing%)
+                  (timeout %nothing%)
                   (argument %nothing%) ...
                   (flag %nothing%) ...)
            (rpc-call path
-                     `((arg . ,(atype 'argument (required? 'argument argument)))
+                     `((offline . ,(Bool 'offline offline))
+                       (timeout . ,(String 'timeout timeout))
+                       (arg . ,(atype 'argument (required? 'argument argument)))
                        ...
                        (flag . ,(ftype 'flag flag))
                        ...)
@@ -500,7 +504,5 @@
        (begin
          (export name)
          (define name
-	   (make-rpc-lambda
-	    reader/writer 'name (arguments ...)
-	    ((Bool offline) (String timeout) flags ...)))))))
+           (make-rpc-lambda reader/writer 'name (arguments ...) (flags ...)))))))
   )
