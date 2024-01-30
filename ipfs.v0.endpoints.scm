@@ -376,6 +376,19 @@
 
 (export-rpc-call
   ()
+  (key/sign)
+  (String key)
+  (String ipns-base))
+
+(export-rpc-call
+  ()
+  (key/verify)
+  (String key)
+  (String signature)
+  (String ipns-base))
+
+(export-rpc-call
+  ()
   (log/level
     (String subsystem yes)
     (String level yes)))
@@ -511,7 +524,8 @@
   ()
   (pin/add
     (String path yes))
-  (Bool recursive))
+  (Bool recursive)
+  (String name))
 
 (export-rpc-call
   ()
@@ -519,7 +533,8 @@
     (String path no))
   (String type)
   (Bool quiet)
-  (Bool stream))
+  (Bool stream)
+  (Bool names))
 
 (export-rpc-call
   ()
